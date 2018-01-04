@@ -3,7 +3,7 @@
   
     angular
       .module('otus.components')
-      .factory('otus.components.ContextFactory', Factory);
+      .factory('otus.components.DynamicTableSettingsFactory', Factory);
   
     function Factory() {
       var self = this;
@@ -12,57 +12,61 @@
       self.create = create;
   
       function create(name) {
-        return new Context(name);
+        return new DynamicTableSettings(name);
       }
   
       return self;
     }
   
-    function Context(name) {
+    function DynamicTableSettings(name) {
       var self = this;
-      var _name = name;
-      var _data = {};
-  
+      
+      var _settings = {};
+
+      elementsArray = [];
+      elementsProperties = [];
+      headers = [];
+      callbackAfterChange;
+      tableUpdateFunction;
+      tableTitle;
+      orderIndices = [];
+      numberFieldsAlignedLeft = 10;
+      flexArray = [];
+      formatData;
+      formatDataPropertiesArray = [];
+      formatDataIndexArray = [];
+      
+      disableCheckbox=false;
+      disableFilter=false;
+      disableReorder=false;
+      disablePagination=false;
+      selectedColor;
+      hoverColor;
+      
+      //new Functionality
+      markupAttribute;
+      selectionFunction;
+      buttonFunctionArray = [];
+      
       /* Public methods */
-      self.getName = getName;
-      self.getData = getData;
-      self.setData = setData;
-      self.removeData = removeData;
-      self.clear = clear;
+      self.getSettings = getSettings;
       self.toJson = toJson;
-      self.fromJson = fromJson;
-      self.toObject = toObject;
+      self.setProperty = setProperty;
   
+      function setProperty(){
+
+      }
+
       function getName() {
         return _name;
       }
   
-      function getData(dataKey) {
-        return _data[dataKey];
-      }
-  
-      function setData(dataKey, dataValue) {
-        _data[dataKey] = dataValue;
-      }
-  
-      function removeData(dataKey) {
-        delete _data[dataKey];
-      }
-  
-      function clear() {
-        _data = {};
+      function getSettings() {
+        return _settings;
       }
   
       function toJson() {
-        return JSON.stringify(_data);
-      }
-  
-      function fromJson(json) {
-        _data = JSON.parse(json) || {};
-      }
-  
-      function toObject() {
-        return _context;
+        return JSON.stringify(_settings);
       }
     }
   }());

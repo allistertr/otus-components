@@ -73,7 +73,8 @@
 
 
   <div layout="column">
-    <dynamic-data-table flex headers="['Arquivo', 'Tipo', 'Tamanho', 'Status', 'Data', '']" 
+    <dynamic-data-table flex 
+      headers="['Arquivo', 'Tipo', 'Tamanho', 'Status', 'Data', '']" 
       elements-array="$ctrl.filesArray"
       elements-properties='[
             "file.name", 
@@ -107,7 +108,6 @@
                     "onClickFunction": $ctrl.updateElement
                 }
             }
-            
             ]' 
       callback-after-change="$ctrl.callbackAfterChange" 
       table-update-function="$ctrl.AliquotTransportationService.dynamicDataTableFunction.updateDataTable"
