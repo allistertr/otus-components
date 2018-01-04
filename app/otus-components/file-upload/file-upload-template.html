@@ -1,0 +1,141 @@
+<style>
+  .file-upload {}
+
+  .file-upload-title {
+    margin: 5px;
+  }
+
+  .file-upload-subtitle {
+    opacity: 0.5;
+    font-size: .9em;
+    margin: 5px;
+  }
+
+  .file-upload-box {
+    border: 2px dashed silver;
+    background-color: rgba(75, 75, 75, 0.01);
+    padding: 20px;
+    padding-bottom: 30px;
+
+    width: 400px;
+  }
+
+  .animated-all-transition {
+    transition: all 0.5s ease;
+  }
+
+  .file-upload-box.draghover {
+    border-color: blue;
+    background-color: rgba(0, 0, 250, 0.1);
+    
+  }
+
+
+  .file-upoad-button {
+    position: relative;
+    top: -36px;
+    
+  }
+
+  .animate-if.ng-enter,
+  .animate-if.ng-leave {
+    transition: all ease 0.5s;
+  }
+
+  .animate-if.ng-enter,
+  .animate-if.ng-leave.ng-leave-active {
+    opacity: 0;
+  }
+
+  .animate-if.ng-leave,
+  .animate-if.ng-enter.ng-enter-active {
+    opacity: 1;
+  }
+</style>
+<div flex>
+
+  <md-button ng-click="$ctrl.fileTitle.length ? $ctrl.fileTitle = '' : $ctrl.fileTitle='...'" class="md-raised md-primary">
+    Seleciona/Deseleciona
+  </md-button>
+
+  <div layout="column" layout-align="center center" class="file-uplopad">
+    <div drop-file propagate-to-children="true" class="file-upload-box animated-all-transition"
+      layout="column" layout-align="center center" flex="50">
+      <span ng-if="!$ctrl.fileTitle.length" class="file-upload-title animate-if">{{$ctrl.title}}</span>
+      <span ng-if="!$ctrl.fileTitle.length" class="file-upload-subtitle animate-if">{{$ctrl.subtitle}}</span>
+    </div>
+    <md-button ng-if="!$ctrl.fileTitle.length" class="md-fab md-primary file-upoad-button animate-if">
+      <md-icon md-font-set="material-icons">file_upload</md-icon>
+      <md-tooltip md-direction="right">{{$ctrl.buttonTooltip}}</md-tooltip>
+    </md-button>
+
+  </div>
+
+
+  <div layout="column">
+    <dynamic-data-table flex headers="['Arquivo', 'Tipo', 'Tamanho', 'Status', 'Data', '']" 
+      elements-array="$ctrl.filesArray"
+      elements-properties='[
+            "file.name", 
+            "file.type", 
+            "file.length", 
+            "file.state",
+            "file.nd",
+            {
+                "iconButton": {
+                    "icon":"delete_forever",
+                    "renderRow":true,
+                    "renderGrid":false,
+                    "tooltip":"Deletar Registro",
+                    "classButton":"md-primary",
+                    "successfulMsg":"Item excluido",
+                    
+                    "onClickFunction": $ctrl.removeElement,
+                    "functionRenderRow": false,
+                    "functionRenderGrid": false,
+                    "functionReturnsSuccess": false
+                }
+            },
+            {
+                "iconButton": {
+                    "icon":"autorenew",
+                    "renderRow":false,
+                    "renderGrid":true,
+                    "tooltip":"Recarregar",
+                    "classButton":"md-primary",
+                    "successfulMsg":"Item Atualizado",
+                    "onClickFunction": $ctrl.updateElement
+                }
+            }
+            
+            ]' 
+      callback-after-change="$ctrl.callbackAfterChange" 
+      table-update-function="$ctrl.AliquotTransportationService.dynamicDataTableFunction.updateDataTable"
+      table-title="'Lista de Arquivos'" 
+      order-indices="[1,3,2,0]" 
+      number-fields-aligned-left="5" 
+      flex-array="['40', 10, 10,10,10,5,5]"
+      format-data="" 
+      format-data-properties-array="['file.nd']" 
+      format-data-index-array="[]" 
+      
+      markup attribute="'selected'"
+      select-unselect-function="" 
+      button-function-array="[()=>{console.log('fun1');}, function(){ console.log('fun2');}]" 
+      
+      disable-checkbox="false"
+      disable-filter="false" 
+      disable-reorder="false" 
+      disable-pagination="false" 
+      selected-color="" 
+      hover-color="">
+    </dynamic-data-table>
+
+    <br>
+
+    <md-button class="md-icon-button">
+      <md-icon md-font-set="material-icons">file_upload</md-icon>
+      <md-tooltip md-direction="right">{{$ctrl.buttonTooltip}}</md-tooltip>
+    </md-button>
+  </div>
+</div>
