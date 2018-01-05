@@ -16,10 +16,10 @@
     });
 
   Controller.$inject = [
-
+    'otus.components.DynamicTableSettingsFactory'
   ];
 
-  function Controller() {
+  function Controller(DynamicTableSettingsFactory) {
     var self = this;
 
     self.$onInit = onInit;
@@ -43,20 +43,51 @@
     }
 
     function onInit() {
-      // var DynamicDataTable = {};
+      var DynamicDataTable = {};
       
-      // self.dynamicTableSettings = DynamicDataTable.createTableSettings()
-      // .setProperty("file.name")
-      // .setProperty("file.type")
-      // .setProperty("file.length")
-      // .setProperty("file.state")
-      // .setProperty("file.nd")
-      // .setProperty()
-      // .setProperty()
-      // .setProperty()
+      self.dynamicTableSettings = DynamicTableSettingsFactory.create()
+      //header, ordinationPriorityIndex
+      .addHeader("Arquivo", 0)
+      //property, formatType
+      .addColumnProperty("file.name")
+
+      //header, ordinationPriorityIndex
+      .addHeader("Tipo", 1)
+      //property, formatType
+      .addColumnProperty("file.type")
+
+      //header, ordinationPriorityIndex
+      .addHeader("Tamanho", 2)
+      //property, formatType
+      .addColumnProperty("file.length")
+
+      //header, ordinationPriorityIndex
+      .addHeader("Status", 3)
+      //property, formatType
+      .addColumnProperty("file.state")
+
+      //header, ordinationPriorityIndex
+      .addHeader("Data", 4)
+      //property, formatType
+      .addColumnProperty("file.nd", "DATE")
+
+      //icon, tooltip, classButton, successMsg,
+      //buttonFuntion, returnsSuccess, renderElement, renderGrid
+      .addColumnIconButton(
+        "delete_forever", "Deletar Registro", "md-primary", "Item excluido",
+        self.removeElement, true, true, false, false
+      )
       
+      //icon, tooltip, classButton, successMsg,
+      //buttonFuntion, returnsSuccess, renderElement, renderGrid
+      .addColumnIconButton(
+        "autorenew", "", "md-primary", "",
+        self.updateElement, false, false, true, false
+      );
       
-      
+
+      console.log(self.dynamicTableSettings)
+
       if (!self.title) self.title = 'Arraste e solte aqui o arquivo.';
       if (!self.subtitle) self.subtitle = 'ou clique';
       if (!self.buttonTooltip) self.buttonTooltip = 'Adicionar Arquivo';

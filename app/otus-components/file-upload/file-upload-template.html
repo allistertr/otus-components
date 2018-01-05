@@ -74,7 +74,7 @@
 
   <div layout="column">
     <dynamic-data-table flex 
-      headers="['Arquivo', 'Tipo', 'Tamanho', 'Status', 'Data', '']" 
+      headers="['Arquivo', 'Tipo', 'Tamanho', 'Status', 'Data', '']"
       elements-array="$ctrl.filesArray"
       elements-properties='[
             "file.name", 
@@ -85,8 +85,6 @@
             {
                 "iconButton": {
                     "icon":"delete_forever",
-                    "renderRow":true,
-                    "renderGrid":false,
                     "tooltip":"Deletar Registro",
                     "classButton":"md-primary",
                     "successfulMsg":"Item excluido",
@@ -95,7 +93,11 @@
                     "functionRenderRow": false,
                     "functionRenderGrid": false,
                     "functionReturnsSuccess": false
-                }
+
+
+                    ,"renderRow":true,
+                    "renderGrid":false
+                  }
             },
             {
                 "iconButton": {
@@ -108,26 +110,26 @@
                     "onClickFunction": $ctrl.updateElement
                 }
             }
-            ]' 
-      callback-after-change="$ctrl.callbackAfterChange" 
+            ]'
+      callback-after-change="$ctrl.callbackAfterChange"
       table-update-function="$ctrl.AliquotTransportationService.dynamicDataTableFunction.updateDataTable"
-      table-title="'Lista de Arquivos'" 
-      order-indices="[1,3,2,0]" 
-      number-fields-aligned-left="5" 
+      table-title="'Lista de Arquivos'"
+      order-indices="[1,3,2,0]"
+      number-fields-aligned-left="5"
       flex-array="['40', 10, 10,10,10,5,5]"
-      format-data="" 
-      format-data-properties-array="['file.nd']" 
-      format-data-index-array="[]" 
+      format-data=""
+      format-data-properties-array="['file.nd']"
+      format-data-index-array="[]"
       
       markup attribute="'selected'"
-      select-unselect-function="" 
-      button-function-array="[()=>{console.log('fun1');}, function(){ console.log('fun2');}]" 
+      select-unselect-function=""
+      button-function-array="[()=>{console.log('fun1');}, function(){ console.log('fun2');}]"
       
       disable-checkbox="false"
-      disable-filter="false" 
-      disable-reorder="false" 
-      disable-pagination="false" 
-      selected-color="" 
+      disable-filter="false"
+      disable-reorder="false"
+      disable-pagination="false"
+      selected-color=""
       hover-color="">
     </dynamic-data-table>
 
