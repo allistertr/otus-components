@@ -42,49 +42,63 @@
 
     }
 
-    function onInit() {
-      var DynamicDataTable = {};
-      
+    function onInit() {     
       self.dynamicTableSettings = DynamicTableSettingsFactory.create()
-      //header, ordinationPriorityIndex
-      .addHeader("Arquivo", 0)
+      //header, flex, ordinationPriorityIndex
+      .addHeader("Arquivo", 10)
       //property, formatType
       .addColumnProperty("file.name")
 
-      //header, ordinationPriorityIndex
-      .addHeader("Tipo", 1)
+      //header, flex, ordinationPriorityIndex
+      .addHeader("Tipo", 40)
       //property, formatType
       .addColumnProperty("file.type")
 
-      //header, ordinationPriorityIndex
-      .addHeader("Tamanho", 2)
+      //header, flex, ordinationPriorityIndex
+      .addHeader("Tamanho", "", 5)
       //property, formatType
       .addColumnProperty("file.length")
 
-      //header, ordinationPriorityIndex
-      .addHeader("Status", 3)
+      //header, flex, ordinationPriorityIndex
+      .addHeader("Status", "", 3)
       //property, formatType
       .addColumnProperty("file.state")
 
-      //header, ordinationPriorityIndex
-      .addHeader("Data", 4)
+      //header, flex, ordinationPriorityIndex
+      .addHeader("Data", "", 4)
       //property, formatType
       .addColumnProperty("file.nd", "DATE")
 
       //icon, tooltip, classButton, successMsg,
-      //buttonFuntion, returnsSuccess, renderElement, renderGrid
+      //buttonFuntion, returnsSuccess, renderElement, renderGrid, removeElement, receiveCallback
       .addColumnIconButton(
         "delete_forever", "Deletar Registro", "md-primary", "Item excluido",
-        self.removeElement, true, true, false, false
+        self.removeElement, true, true, false, true, false
       )
       
       //icon, tooltip, classButton, successMsg,
-      //buttonFuntion, returnsSuccess, renderElement, renderGrid
+      //buttonFuntion, returnsSuccess, renderElement, renderGrid, removeElement, receiveCallback
       .addColumnIconButton(
         "autorenew", "", "md-primary", "",
-        self.updateElement, false, false, true, false
-      );
+        self.updateElement, false, false, true, false, false
+      )
       
+      .setElementsArray(self.filesArray)
+      .setCallbackAfterChange(self.callbackAfterChange)
+      .setTableUpdateFunction(self.updateDataTable)
+      .setTitle("Lista de Arquivos")
+      .setNumberFieldsAlignedLeft(5)
+      .setFormatData("MM/yyyy/-Dia-dd")
+      //.setSelectUnselectFunction()
+      .setCheckbox(true)
+      .setFilter(true)
+      .setReorder(true)
+      .setPagination(true)
+      .setSelectedColor()
+      .setHoverColor()
+    
+      .getSettings();
+
 
       console.log(self.dynamicTableSettings)
 

@@ -117,7 +117,8 @@
         creacteTable();
       }
       
-      function _refreshGrid(){
+      function _refreshGrid(newElementsArray){
+        self.elementsArray = newElementsArray;
         self.selectedItemCounter = 0;
         self.creacteTable();
       }

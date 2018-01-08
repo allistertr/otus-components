@@ -74,7 +74,9 @@
 
   <div layout="column">
     <dynamic-data-table flex 
-      headers="['Arquivo', 'Tipo', 'Tamanho', 'Status', 'Data', '']"
+    dynamicTableSettings="dynamicTableSettings"
+    
+    headers="['Arquivo', 'Tipo', 'Tamanho', 'Status', 'Data', '']"
       elements-array="$ctrl.filesArray"
       elements-properties='[
             "file.name", 
