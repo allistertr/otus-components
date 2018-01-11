@@ -45,12 +45,12 @@
     function onInit() {     
       self.dynamicTableSettings = DynamicTableSettingsFactory.create()
       //header, flex, ordinationPriorityIndex
-      .addHeader("Arquivo", 10)
+      .addHeader("Arquivo")
       //property, formatType
       .addColumnProperty("file.name")
 
       //header, flex, ordinationPriorityIndex
-      .addHeader("Tipo", 40)
+      .addHeader("Tipo")
       //property, formatType
       .addColumnProperty("file.type")
 
@@ -73,7 +73,7 @@
       //buttonFuntion, returnsSuccess, renderElement, renderGrid, removeElement, receiveCallback
       .addColumnIconButton(
         "delete_forever", "Deletar Registro", "md-primary", "Item excluido",
-        self.removeElement, true, true, false, true, false
+        self.removeElement, true, false, false, true, false
       )
       
       //icon, tooltip, classButton, successMsg,

@@ -73,66 +73,35 @@
 
 
   <div layout="column">
-    <dynamic-data-table flex 
-    dynamicTableSettings="dynamicTableSettings"
+    <!-- <dynamic-data-table flex 
+      headers="$ctrl.dynamicTableSettings.headers"
+      elements-array="$ctrl.dynamicTableSettings.elementsArray"
+      elements-properties="$ctrl.dynamicTableSettings.elementsProperties"
+      callback-after-change="$ctrl.dynamicTableSettings.callbackAfterChange"
+      table-update-function="$ctrl.dynamicTableSettings.tableUpdateFunction"
+      table-title="$ctrl.dynamicTableSettings.tableTitle"
+      order-indices="$ctrl.dynamicTableSettings.orderIndices"
+      number-fields-aligned-left="$ctrl.dynamicTableSettings.numberFieldsAlignedLeft"
+      flex-array="$ctrl.dynamicTableSettings.flexArray"
+      format-data="$ctrl.dynamicTableSettings.formatData"
+      format-data-properties-array="$ctrl.dynamicTableSettings.formatDataPropertiesArray"
+      format-data-index-array="$ctrl.dynamicTableSettings.formatDataIndexArray"
+      
+      disable-checkbox="$ctrl.dynamicTableSettings.disableCheckbox"
+      disable-filter="$ctrl.dynamicTableSettings.disableFilter"
+      disable-reorder="$ctrl.dynamicTableSettings.disableReorder"
+      disable-pagination="$ctrl.dynamicTableSettings.disablePagination"
+      selected-color="$ctrl.dynamicTableSettings.selectedColor"
+      hover-color="$ctrl.dynamicTableSettings.hoverColor"
+      
+      markup-attribute="$ctrl.dynamicTableSettings.markupAttribute"
+      select-unselect-function="$ctrl.dynamicTableSettings.selectUnselectFunction"
+      button-function-array="$ctrl.dynamicTableSettings.buttonFunctionArray"
+    > -->
     
-    headers="['Arquivo', 'Tipo', 'Tamanho', 'Status', 'Data', '']"
-      elements-array="$ctrl.filesArray"
-      elements-properties='[
-            "file.name", 
-            "file.type", 
-            "file.length", 
-            "file.state",
-            "file.nd",
-            {
-                "iconButton": {
-                    "icon":"delete_forever",
-                    "tooltip":"Deletar Registro",
-                    "classButton":"md-primary",
-                    "successfulMsg":"Item excluido",
-                    
-                    "onClickFunction": $ctrl.removeElement,
-                    "functionRenderRow": false,
-                    "functionRenderGrid": false,
-                    "functionReturnsSuccess": false
-
-
-                    ,"renderRow":true,
-                    "renderGrid":false
-                  }
-            },
-            {
-                "iconButton": {
-                    "icon":"autorenew",
-                    "renderRow":false,
-                    "renderGrid":true,
-                    "tooltip":"Recarregar",
-                    "classButton":"md-primary",
-                    "successfulMsg":"Item Atualizado",
-                    "onClickFunction": $ctrl.updateElement
-                }
-            }
-            ]'
-      callback-after-change="$ctrl.callbackAfterChange"
-      table-update-function="$ctrl.AliquotTransportationService.dynamicDataTableFunction.updateDataTable"
-      table-title="'Lista de Arquivos'"
-      order-indices="[1,3,2,0]"
-      number-fields-aligned-left="5"
-      flex-array="['40', 10, 10,10,10,5,5]"
-      format-data=""
-      format-data-properties-array="['file.nd']"
-      format-data-index-array="[]"
-      
-      markup attribute="'selected'"
-      select-unselect-function=""
-      button-function-array="[()=>{console.log('fun1');}, function(){ console.log('fun2');}]"
-      
-      disable-checkbox="false"
-      disable-filter="false"
-      disable-reorder="false"
-      disable-pagination="false"
-      selected-color=""
-      hover-color="">
+    <dynamic-data-table flex 
+      dynamic-table-settings="$ctrl.dynamicTableSettings"
+    >
     </dynamic-data-table>
 
     <br>

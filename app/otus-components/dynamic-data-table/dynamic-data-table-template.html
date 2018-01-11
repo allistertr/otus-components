@@ -170,7 +170,7 @@
               </div>
               <div ng-if="$ctrl.disableCheckbox"style="padding-top:40px"></div>
       
-              <div class="{{'dynamic-table-header-column ' + $ctrl.getColumnPositionClass($index, $ctrl.table.headers)}}" ng-repeat="header in $ctrl.table.headers"
+              <div class="{{'dynamic-table-header-column ' + $ctrl.getColumnPositionClass($index, $ctrl.table.headers)}}" ng-repeat="header in $ctrl.table.headers track by $index"
                 flex="{{$ctrl.getFlex($index)}}" ng-click="$ctrl.changeOrder($index)">
                 {{header}}
                 <md-icon ng-if="$ctrl.orderQuery === 'column' + $index + '.orderValue'" ng-class="$ctrl.getOrderIcon()" md-font-set="material-icons">arrow_drop_up</md-icon>
@@ -196,8 +196,8 @@
                 <!-- ................ -->
                 <md-button ng-if="column.specialField && column.specialField.iconButton" 
                   class="md-icon-button {{column.specialField.iconButton.classButton}}"
-                  ng-click="$ctrl.specialFieldOnClick(column.specialField.iconButton, row)">
-                  <md-tooltip >{{column.specialField.iconButton.tooltip}}</md-tooltip>
+                  ng-click="$ctrl.iconButtonClick(column.specialField.iconButton, row)">
+                  <md-tooltip ng-if="column.specialField.iconButton.tooltip">{{column.specialField.iconButton.tooltip}}</md-tooltip>
                     <md-icon md-font-set="material-icons">{{column.specialField.iconButton.icon}}</md-icon>
                   </md-button>
               </div>

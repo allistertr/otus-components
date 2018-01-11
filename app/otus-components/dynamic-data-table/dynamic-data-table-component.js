@@ -7,32 +7,34 @@
         templateUrl: 'app/otus-components/dynamic-data-table/dynamic-data-table-template.html',
         bindings: {
           headers: '<',
-          elementsArray: '=',
+          elementsArray: '=?',
           elementsProperties: '<',
-          callbackAfterChange: '=',
-          tableUpdateFunction: '=',
-  
+          callbackAfterChange: '=?',
+          tableUpdateFunction: '=?',
+          
           formatData: '<',
           formatDataIndexArray: '<',
           formatDataPropertiesArray: '<',
-  
+          
           tableTitle: '<',
           flexArray: '<',
           orderIndices: '<',
           numberFieldsAlignedLeft: '<',
-  
+          
           selectedColor: '<',
           hoverColor: '<',
-  
+          
           disableCheckbox: '<',
           disableReorder: '<',
           disableFilter: '<',
           disablePagination: '<',
-  
+          
           rowsPerPageArray: '<',
           rowPerPageDefault: '<',
-  
-          hideDelayTime: '<'
+          
+          hideDelayTime: '<',
+
+          dynamicTableSettings: '='
         },
         controller: Controller
       });
@@ -78,7 +80,7 @@
       self.nextPage = nextPage;
       self.previousPage = previousPage;
 
-      self.specialFieldOnClick = specialFieldOnClick;
+      self.iconButtonClick = iconButtonClick;
   
       self.disableAnimation = false;
   
@@ -93,8 +95,45 @@
       self.currentRowOnHover;
 
       function onInit() {
+        _initializeDefaultValues()
         _setOrderQuery();
   
+  
+        self.tableUpdateFunction = _refreshGrid;
+  
+        creacteTable();
+      }
+
+
+      function _initializeDefaultValues(){
+        if(self.dynamicTableSettings){
+          var _settings = self.dynamicTableSettings;
+          _settings = _settings.getSettings ? _settings.getSettings() : _settings;
+          console.log(_settings)
+
+          self.headers = _settings.headers;
+          self.elementsArray = _settings.elementsArray;
+          self.elementsProperties = _settings.elementsProperties;
+          self.callbackAfterChange = _settings.callbackAfterChange;
+          self.tableUpdateFunction = _settings.tableUpdateFunction;
+          self.formatData = _settings.formatData;
+          self.formatDataIndexArray = _settings.formatDataIndexArray;
+          self.formatDataPropertiesArray = _settings.formatDataPropertiesArray;
+          self.tableTitle = _settings.tableTitle;
+          self.flexArray = _settings.flexArray;
+          self.orderIndices = _settings.orderIndices;
+          self.numberFieldsAlignedLeft = _settings.numberFieldsAlignedLeft;
+          self.selectedColor = _settings.selectedColor;
+          self.hoverColor = _settings.hoverColor;
+          self.disableCheckbox = _settings.disableCheckbox;
+          self.disableReorder = _settings.disableReorder;
+          self.disableFilter = _settings.disableFilter;
+          self.disablePagination = _settings.disablePagination;
+          self.rowsPerPageArray = _settings.rowsPerPageArray;
+          self.rowPerPageDefault = _settings.rowPerPageDefault;
+          self.hideDelayTime = _settings.hideDelayTime;
+        }
+        
         if(!self.numberFieldsAlignedLeft) self.numberFieldsAlignedLeft = 1;
   
         if(!self.hoverColor) self.hoverColor = '#EEEEEE';
@@ -111,14 +150,22 @@
           isError: false,
           msg: "Devem ser informadas a mesma quantidade de valores e de cabeçalhos."
         };
-  
-        self.tableUpdateFunction = _refreshGrid;
-  
-        creacteTable();
       }
+
+      function _resetSelectedItemCounter() {
+        self.selectedItemCounter = 0;
+
+        self.table.rows.forEach(function(row){
+          if(row.selected){
+            self.selectedItemCounter++;
+          }
+          changeRowStyle(row);
+        });
+      }
+
       
       function _refreshGrid(newElementsArray){
-        self.elementsArray = newElementsArray;
+        self.elementsArray = newElementsArray || self.elementsArray;
         self.selectedItemCounter = 0;
         self.creacteTable();
       }
@@ -447,12 +494,15 @@
       }
   
       function selectDeselectRow(row){
-        if(row.selected){
-          _deselectRow(row);
-        } else {
-          _selectRow(row);
+        if(!row.specialFieldClicked){
+          if(row.selected){
+            _deselectRow(row);
+          } else {
+            _selectRow(row);
+          }
+          changeRowStyle(row);
         }
-        changeRowStyle(row);
+        row.specialFieldClicked = false;
       }
   
       function _selectRow(row){
@@ -480,7 +530,8 @@
           hover: false,
           styleSelect: {'background-color':self.selectedColor},
           styleHover: {'background-color':self.hoverColor},
-          style: {}
+          style: {},
+          specialFieldClicked: false
         };
   
         self.elementsProperties.forEach(function(elementProperty, index){
@@ -529,12 +580,15 @@
           specialFieldStructure = {
             iconButton: {
               icon: iconButton.icon,
-              renderRow: iconButton.renderRow || false,
-              renderGrid: iconButton.renderGrid || false,
               tooltip: iconButton.tooltip || "",
               classButton: iconButton.classButton || "",
-              successfulMsg: iconButton.successfulMsg || "",
-              onClickFunction: iconButton.onClickFunction || function(){}
+              successMsg: iconButton.successMsg || "",
+              buttonFuntion: iconButton.buttonFuntion,
+              returnsSuccess: iconButton.returnsSuccess || false,
+              renderElement: iconButton.renderElement || false,
+              renderGrid: iconButton.renderGrid || false,
+              removeElement: iconButton.removeElement || false,
+              receiveCallback: iconButton.receiveCallback || false
             }
           }
         }
@@ -548,48 +602,91 @@
         return specialFieldStructure;
       }
 
-      function _updateRow(element, rowIndex){
-        var updatedRow = _createRow(element, rowIndex);
-        
+
+      function _removeRow(row) {
         var allRowsArray = [
-          self.table.fullRows,
-          self.table.rows,
-          self.table.filteredRows,
-          self.table.currentPageRows
+          "fullRows",
+          "rows",
+          "filteredRows",
+          "currentPageRows"
         ];
         
-        
-        allRowsArray.forEach(function(array){
-          for (let i = 0; i < array.length; i++) {
-            var row = array[i];
-            
-            if(row.index === rowIndex){
-              array[i] = updatedRow;
-            }
-          }
+        allRowsArray.forEach(function(arrayName){
+          self.table[arrayName] = self.table[arrayName].filter(function(rowInfo){
+            return rowInfo.index != row.index;
+          });
+          
+          // var array = self.table[arrayName];
+          // var rowIndex = undefined;
+
+          // for (let i = 0; i < array.length; i++) {
+          //   if(row.index === array[i].index){
+          //     var rowIndex = i;
+          //   }
+          // }
+
+          // if(rowIndex !== undefined) self.table[arrayName] = array.splice(rowIndex, 1);
+          // rowIndex = undefined;
         });
 
+        self.elementsArray = self.elementsArray.filter(function(rowInfo){
+          return rowInfo.index != row.index;
+        });
+        self.dynamicTableSettings.elementsArray = self.dynamicTableSettings.elementsArray.filter(function(rowInfo){
+          return rowInfo.index != row.index;
+        });
       }
 
 
-      function specialFieldOnClick(structure, row){
-        var returnedElement = undefined;
+      function _updateRow(element, row){
+        var updatedRow = _createRow(element, row.index);
         
-        if(structure.onClickFunction){
-          returnedElement = structure.onClickFunction(row.ref);
-        }
+        row.ref = updatedRow.ref;
+        row.columns = updatedRow.columns;
+      }
 
-        if(structure.successfulMsg){
-          _showMsg(structure.successfulMsg);
-        }
 
-        if(structure.renderRow && returnedElement){
-          _updateRow(returnedElement, row.index)
-        }
+      function iconButtonClick(structure, row){
+        row.specialFieldClicked = true;
+        
+        var _actionFuntion = function(returnedElement) {
+          if(!returnedElement){
+            returnedElement = self.table.fullRows[row.index];
+          }
 
-        if(structure.renderGrid){
-          _refreshGrid();
+          if(structure.renderElement && returnedElement){
+            _updateRow(returnedElement, row)
+          }
+          
+          if(structure.removeElement){
+            _removeRow(row);
+          }
+          
+          if(structure.renderGrid){
+            _refreshGrid();
+          }
+          
+          if(structure.successMsg){
+            _showMsg(structure.successMsg);
+          }
         }
+        
+        if(structure.buttonFuntion){
+          var returnedElement = undefined;
+          if(structure.receiveCallback){
+            structure.buttonFuntion(row.ref, _actionFuntion);
+          } else {
+            if(structure.returnsSuccess){
+              if(structure.buttonFuntion(row.ref)) _actionFuntion();
+            } else {
+              _actionFuntion();
+            }
+          }
+        } else {
+          _actionFuntion();
+        }
+  
+        
       }
     }
   }());

@@ -21,36 +21,35 @@
   function DynamicTableSettings() {
     var self = this;
 
-    var _settings = {};
     var _ordenationPriorityIndexArray = [
       //{headerIndex: 0, ordenationPriorityIndex: 1}
     ];
-
-    self.elementsArray = [];
-    self.elementsProperties = [];
-    self.headers = [];
-    self.callbackAfterChange;
-    self.tableUpdateFunction;
-    self.tableTitle;
-    self.orderIndices = [];
-    self.numberFieldsAlignedLeft = 10;
-    self.flexArray = [];
-    self.formatData;
-    self.selectUnselectFunction;
-    self.formatDataPropertiesArray = [];
-    self.formatDataIndexArray = [];
-
-    self.disableCheckbox = false;
-    self.disableFilter = false;
-    self.disableReorder = false;
-    self.disablePagination = false;
-    self.selectedColor;
-    self.hoverColor;
-
-    //new Functionality
-    self.markupAttribute;
-    self.selectionFunction;
-    self.buttonFunctionArray = [];
+    
+    self.settings = {
+      elementsArray: [],
+      elementsProperties: [],
+      headers: [],
+      callbackAfterChange: undefined,
+      tableUpdateFunction: undefined,
+      tableTitle: undefined,
+      orderIndices: [],
+      numberFieldsAlignedLeft: 10,
+      flexArray: [],
+      formatData: undefined,
+      selectUnselectFunction: undefined,
+      formatDataPropertiesArray: [],
+      formatDataIndexArray: [],
+      disableCheckbox: false,
+      disableFilter: false,
+      disableReorder: false,
+      disablePagination: false,
+      selectedColor: undefined,
+      hoverColor: undefined,
+      //new Functionality
+      markupAttribute: undefined,
+      selectionFunction: undefined,
+      buttonFunctionArray: []
+    };
 
     /* Public methods */
     self.getSettings = getSettings;
@@ -70,48 +69,42 @@
     self.setSelectedColor = setSelectedColor;
     self.setHoverColor = setHoverColor;
 
-
     self.addHeader = addHeader;
     self.addColumnProperty = addColumnProperty;
     self.addColumnIconButton = addColumnIconButton;
 
-
     function setProperty() {
-
       return self;
     }
 
-
     function addHeader(header, flex, ordinationPriorityIndex) {
-      self.headers.push(
+      self.settings.headers.push(
         header || ""
       );
 
       if (flex === undefined) flex = "";
 
-      self.flexArray.push(flex);
+      self.settings.flexArray.push(flex);
 
       if (ordinationPriorityIndex !== undefined) {
         _ordenationPriorityIndexArray.push(
           {
-            headerIndex: self.headers.length - 1,
+            headerIndex: self.settings.headers.length - 1,
             ordenationPriorityIndex: ordinationPriorityIndex
           }
         );
       }
-
       return self;
     }
 
-
     function addColumnProperty(property, formatType) {
-      self.elementsProperties.push(
+      self.settings.elementsProperties.push(
         property || ""
       );
 
       if (formatType && formatType.toUpperCase && formatType.toUpperCase() === "DATE") {
-        self.formatDataIndexArray.push(
-          self.elementsProperties.length - 1
+        self.settings.formatDataIndexArray.push(
+          self.settings.elementsProperties.length - 1
         );
       }
       _addEmptyHeaderIfNeed();
@@ -123,7 +116,7 @@
       returnsSuccess, renderElement, renderGrid, removeElement, receiveCallback
     ) {
 
-      self.elementsProperties.push(
+      self.settings.elementsProperties.push(
         {
           iconButton: {
             icon: icon || "",
@@ -144,7 +137,7 @@
     }
 
     function _addEmptyHeaderIfNeed() {
-      if (self.elementsProperties.length > self.headers.length) {
+      if (self.settings.elementsProperties.length > self.settings.headers.length) {
         self.addHeader("");
       }
 
@@ -164,79 +157,79 @@
         return 0;
       });
 
-      self.orderIndices = [];
+      self.settings.orderIndices = [];
       ordenationArray.forEach(function(ordenation){
-        self.orderIndices.push(ordenation.headerIndex);
+        self.settings.orderIndices.push(ordenation.headerIndex);
       })
-      return self;
+      return self.settings;
     }
 
     function setElementsArray(elementsArray) {
-      self.elementsArray = elementsArray;
+      self.settings.elementsArray = elementsArray;
       return self;
     }
 
     function setCallbackAfterChange(callbackAfterChange) {
-      self.callbackAfterChange = callbackAfterChange;
+      self.settings.callbackAfterChange = callbackAfterChange;
       return self;
     }
 
     function setTableUpdateFunction(tableUpdateFunction) {
-      self.tableUpdateFunction = tableUpdateFunction;
+      self.settings.tableUpdateFunction = tableUpdateFunction;
       return self;
     }
 
     function setTitle(tableTitle) {
-      self.tableTitle = tableTitle;
+      self.settings.tableTitle = tableTitle;
       return self;
     }
 
     function setNumberFieldsAlignedLeft(numberFieldsAlignedLeft) {
-      self.numberFieldsAlignedLeft = numberFieldsAlignedLeft;
+      self.settings.numberFieldsAlignedLeft = numberFieldsAlignedLeft;
       return self;
     }
 
     function setFormatData(formatData) {
-      self.formatData = formatData;
+      self.settings.formatData = formatData;
       return self;
     }
 
     function setSelectUnselectFunction(selectUnselectFunction) {
-      self.selectUnselectFunction = selectUnselectFunction;
+      self.settings.selectUnselectFunction = selectUnselectFunction;
       return self;
     }
 
     function setSelectedColor(selectedColor) {
-      self.selectedColor = selectedColor;
+      self.settings.selectedColor = selectedColor;
       return self;
     }
 
     function setHoverColor(hoverColor) {
-      self.hoverColor = hoverColor;
+      self.settings.hoverColor = hoverColor;
       return self;
     }
 
     function setCheckbox(showCheckbox) {
       showCheckbox = showCheckbox ? true : false;
-      self.disableCheckbox = !showCheckbox;
+      self.settings.disableCheckbox = !showCheckbox;
       return self;
     }
 
     function setFilter(showFilter) {
       showFilter = showFilter ? true : false;
-      self.disableFilter = !showFilter;
+      self.settings.disableFilter = !showFilter;
       return self;
     }
 
     function setReorder(showReorder) {
       showReorder = showReorder ? true : false;
-      self.disableReorder = !showReorder;
+      self.settings.disableReorder = !showReorder;
       return self;
     }
 
     function setPagination(showPagination) {
       showPagination = showPagination ? true : false;
-      self.disablePagination = !showPagination;
+      self.settings.disablePagination = !showPagination;
       return self;
     }
 
