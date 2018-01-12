@@ -16,11 +16,13 @@
     });
 
   Controller.$inject = [
+    '$mdDialog',
     'otus.components.DynamicTableSettingsFactory'
   ];
 
-  function Controller(DynamicTableSettingsFactory) {
+  function Controller($mdDialog, DynamicTableSettingsFactory) {
     var self = this;
+    var _confirmAction;
 
     self.$onInit = onInit;
 
@@ -42,10 +44,21 @@
 
     }
 
-    function onInit() {     
+    self.executCallback = function(element, callback) {
+      $mdDialog.show(_confirmAction).then(function() {
+        callback(element);
+      })
+      .catch(function() {
+        
+      });
+    }
+
+    function onInit() {
+      _buildDialogs();
+
       self.dynamicTableSettings = DynamicTableSettingsFactory.create()
       //header, flex, ordinationPriorityIndex
-      .addHeader("Arquivo")
+      .addHeader("Arquivo",30)
       //property, formatType
       .addColumnProperty("file.name")
 
@@ -82,15 +95,22 @@
         "autorenew", "", "md-primary", "",
         self.updateElement, false, false, true, false, false
       )
+
+      //icon, tooltip, classButton, successMsg,
+      //buttonFuntion, returnsSuccess, renderElement, renderGrid, removeElement, receiveCallback
+      .addColumnIconButton(
+        "delete_forever", "", "md-primary", "",
+        self.executCallback, false, false, true, true, true
+      )
       
       .setElementsArray(self.filesArray)
       .setCallbackAfterChange(self.callbackAfterChange)
       .setTableUpdateFunction(self.updateDataTable)
       .setTitle("Lista de Arquivos")
       .setNumberFieldsAlignedLeft(5)
-      .setFormatData("MM/yyyy/-Dia-dd")
+      .setFormatData("'Dia - 'dd/MM/yy")
       //.setSelectUnselectFunction()
-      .setCheckbox(true)
+      .setCheckbox(false)
       .setFilter(true)
       .setReorder(true)
       .setPagination(true)
@@ -107,21 +127,30 @@
       if (!self.buttonTooltip) self.buttonTooltip = 'Adicionar Arquivo';
 
 
-      for (var i = 1; i < 11; i++) {
-        self.filesArray.push(
-          {
-            file: {
-              name: 'Resultados de exames - ' + i,
-              type: 'CSV',
-              length: (14 * i) + 'kbs',
-              state: '',
-              nd: self.date
-            }
+      for (var i = 1; i < 22; i++) {
+        var tmp = {
+          file: {
+            name: 'Resultados de exames - ' + i,
+            type: 'CSV',
+            length: (14 * i) + 'kbs',
+            state: '',
+            nd: self.date
           }
-        )
+        }
+
+        self.filesArray.push(tmp)
       }
 
       console.log("file-upload-onInit");
+    }
+
+    function _buildDialogs() {
+      _confirmAction = $mdDialog.confirm()
+        .title('Confirmar Ação:')
+        .textContent('A ação será executada, deseja continuar?')
+        .ariaLabel('Confirmação de Ação')
+        .ok('Ok')
+        .cancel('Cancelar');
     }
   }
 }());

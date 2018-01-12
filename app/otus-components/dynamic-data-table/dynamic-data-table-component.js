@@ -145,6 +145,7 @@
         if(!self.formatDataIndexArray) self.formatDataIndexArray = [];
         if(!self.formatDataPropertiesArray) self.formatDataPropertiesArray = [];
         if(!self.hideDelayTime) self.hideDelayTime = 3000;
+        if(!self.callbackAfterChange) self.callbackAfterChange = function(){};
 
         self.error = {
           isError: false,
@@ -163,7 +164,7 @@
         });
       }
 
-      
+
       function _refreshGrid(newElementsArray){
         self.elementsArray = newElementsArray || self.elementsArray;
         self.selectedItemCounter = 0;
@@ -368,20 +369,26 @@
       }
   
       function getIsNextPage(){
-        var activeNext = false;
-        if(self.table.currentPage * self.rowPerPageDefault < self.table.filteredRows.length){
-          activeNext = true;
-        }
-  
-        return activeNext;
+        return _haveThisPage(self.table.currentPage + 1);
       }
   
       function getIsPreviousPage(){
-        var activePrevious = false;
-        if(self.table.currentPage > 1){
-          activePrevious = true;
+        return self.table.currentPage > 1 ? true :  false;
+      }
+
+      function _haveThisPage(page){
+        var havePage = false;
+        if(page > 0){
+          var previousPage = page - 1;
+          if(page === 1){
+            havePage = true;
+          } else {
+            if(previousPage * self.rowPerPageDefault < self.table.filteredRows.length){
+              havePage = true;
+            }
+          }
         }
-        return activePrevious;
+        return havePage;
       }
   
       function creacteTable(){
@@ -592,49 +599,27 @@
             }
           }
         }
-        
-        // "md-primary"
-        // "md-secondary"
-        // "md-accent"
-        // "md-warn"
-        // "md-raised"
 
         return specialFieldStructure;
       }
 
+      function _refreshGridAndKeepCurrentPage(){
+        var _currentPage = self.table.currentPage;
+        _refreshGrid();
+        if(_havePagination()){
+          for (var i = _currentPage; i >= 1; i--) {
+            if(_haveThisPage(i)){
+              self.table.currentPage = i;
+              pagesChage();
+              break;
+            }
+          }
+        }
+      }
+
 
       function _removeRow(row) {
-        var allRowsArray = [
-          "fullRows",
-          "rows",
-          "filteredRows",
-          "currentPageRows"
-        ];
-        
-        allRowsArray.forEach(function(arrayName){
-          self.table[arrayName] = self.table[arrayName].filter(function(rowInfo){
-            return rowInfo.index != row.index;
-          });
-          
-          // var array = self.table[arrayName];
-          // var rowIndex = undefined;
-
-          // for (let i = 0; i < array.length; i++) {
-          //   if(row.index === array[i].index){
-          //     var rowIndex = i;
-          //   }
-          // }
-
-          // if(rowIndex !== undefined) self.table[arrayName] = array.splice(rowIndex, 1);
-          // rowIndex = undefined;
-        });
-
-        self.elementsArray = self.elementsArray.filter(function(rowInfo){
-          return rowInfo.index != row.index;
-        });
-        self.dynamicTableSettings.elementsArray = self.dynamicTableSettings.elementsArray.filter(function(rowInfo){
-          return rowInfo.index != row.index;
-        });
+        self.elementsArray.splice(row.index, 1);
       }
 
 
@@ -654,16 +639,17 @@
             returnedElement = self.table.fullRows[row.index];
           }
 
-          if(structure.renderElement && returnedElement){
-            _updateRow(returnedElement, row)
+          if(structure.renderElement && returnedElement && !structure.removeElement){
+            _updateRow(returnedElement, row);
           }
           
           if(structure.removeElement){
             _removeRow(row);
+            _refreshGridAndKeepCurrentPage();
           }
           
-          if(structure.renderGrid){
-            _refreshGrid();
+          if(structure.renderGrid && !structure.removeElement){
+            _refreshGridAndKeepCurrentPage();
           }
           
           if(structure.successMsg){
@@ -679,7 +665,7 @@
             if(structure.returnsSuccess){
               if(structure.buttonFuntion(row.ref)) _actionFuntion();
             } else {
-              _actionFuntion();
+              _actionFuntion(structure.buttonFuntion(row.ref));
             }
           }
         } else {
