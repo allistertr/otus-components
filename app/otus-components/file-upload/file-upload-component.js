@@ -31,12 +31,12 @@
     self.filesArray = []
 
     self.removeElement = function (element) {
-      element.file.state = "Excluido";
+      element.file.state = 'Excluido';
       return element;
     }
 
     self.updateElement = function (element) {
-      element.file.state = "Atualizado";
+      element.file.state = 'Atualizado';
       return element;
     }
 
@@ -57,56 +57,56 @@
       _buildDialogs();
 
       self.dynamicTableSettings = DynamicTableSettingsFactory.create()
-      //header, flex, ordinationPriorityIndex
-      .addHeader("Arquivo",30)
+      //header, flex, align, ordinationPriorityIndex
+      .addHeader('Arquivo', '', 'left', 30)
       //property, formatType
-      .addColumnProperty("file.name")
+      .addColumnProperty('file.name')
 
-      //header, flex, ordinationPriorityIndex
-      .addHeader("Tipo")
+      //header, flex, align, ordinationPriorityIndex
+      .addHeader('Tipo', '', 'center')
       //property, formatType
-      .addColumnProperty("file.type")
+      .addColumnProperty('file.type')
 
-      //header, flex, ordinationPriorityIndex
-      .addHeader("Tamanho", "", 5)
+      //header, flex, align, ordinationPriorityIndex
+      .addHeader('Tamanho', '', '', 5)
       //property, formatType
-      .addColumnProperty("file.length")
+      .addColumnProperty('file.length')
 
-      //header, flex, ordinationPriorityIndex
-      .addHeader("Status", "", 3)
+      //header, flex, align, ordinationPriorityIndex
+      .addHeader('Status', '', 'center', 3)
       //property, formatType
-      .addColumnProperty("file.state")
+      .addColumnProperty('file.state')
 
-      //header, flex, ordinationPriorityIndex
-      .addHeader("Data", "", 4)
+      //header, flex, align, ordinationPriorityIndex
+      .addHeader('Data', '', '', 4)
       //property, formatType
-      .addColumnProperty("file.nd", "DATE")
+      .addColumnProperty('file.nd', 'DATE')
 
       //icon, tooltip, classButton, successMsg,
       //buttonFuntion, returnsSuccess, renderElement, renderGrid, removeElement, receiveCallback
       .addColumnIconButton(
-        "delete_forever", "Deletar Registro", "md-primary", "Item excluido",
+        'delete_forever', 'Deletar Registro', 'md-primary', 'Item excluido',
         self.removeElement, true, false, false, true, false
       )
       
       //icon, tooltip, classButton, successMsg,
       //buttonFuntion, returnsSuccess, renderElement, renderGrid, removeElement, receiveCallback
       .addColumnIconButton(
-        "autorenew", "", "md-primary", "",
+        'autorenew', '', 'md-primary', '',
         self.updateElement, false, false, true, false, false
       )
 
       //icon, tooltip, classButton, successMsg,
       //buttonFuntion, returnsSuccess, renderElement, renderGrid, removeElement, receiveCallback
       .addColumnIconButton(
-        "delete_forever", "", "md-primary", "",
+        'delete_forever', '', 'md-primary', '',
         self.executCallback, false, false, true, true, true
       )
       
       .setElementsArray(self.filesArray)
       .setCallbackAfterChange(self.callbackAfterChange)
       .setTableUpdateFunction(self.updateDataTable)
-      .setTitle("Lista de Arquivos")
+      .setTitle('Lista de Arquivos')
       .setNumberFieldsAlignedLeft(5)
       .setFormatData("'Dia - 'dd/MM/yy")
       //.setSelectUnselectFunction()
@@ -141,7 +141,7 @@
         self.filesArray.push(tmp)
       }
 
-      console.log("file-upload-onInit");
+      console.log('file-upload-onInit');
     }
 
     function _buildDialogs() {

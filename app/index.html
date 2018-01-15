@@ -24,7 +24,21 @@
 <script src="node_modules/jquery/dist/jquery.min.js"></script>
 <!-- ************************************* Angular ************************************* -->
 <script src="node_modules/angular/angular.min.js"></script>
+
+<script>
+    var head  = document.getElementsByTagName('head')[0];
+    var script = document.createElement('script');
+    script.src = "node_modules/angular-animate/angular-animate.min.js";
+    
+    script.onload = function() {
+        console.log("Script loaded and ready");
+    };
+    head.appendChild(script)
+    
+</script>
 <script src="node_modules/angular-animate/angular-animate.min.js"></script>
+
+
 <script src="node_modules/angular-aria/angular-aria.min.js"></script>
 <script src="node_modules/angular-bind-html-compile-ci-dev/angular-bind-html-compile.js"></script>
 <script src="node_modules/angular-messages/angular-messages.min.js"></script>

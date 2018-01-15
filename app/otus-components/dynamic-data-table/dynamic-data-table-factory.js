@@ -35,6 +35,7 @@
       orderIndices: [],
       numberFieldsAlignedLeft: 10,
       flexArray: [],
+      alignArray: [],
       formatData: undefined,
       selectUnselectFunction: undefined,
       formatDataPropertiesArray: [],
@@ -77,14 +78,30 @@
       return self;
     }
 
-    function addHeader(header, flex, ordinationPriorityIndex) {
+    function addHeader(header, flex, align, ordinationPriorityIndex) {
       self.settings.headers.push(
-        header || ""
+        header || ''
       );
-
-      if (flex === undefined) flex = "";
-
+      
+      if (flex === undefined) flex = '';
       self.settings.flexArray.push(flex);
+      
+      var alignmentAccepted = false;
+      var avaliableAlignArray = ['right', 'left', 'center'];
+      if(typeof align !== 'string') align = '';
+      
+      for (var i = 0; i < avaliableAlignArray.length; i++) {
+        var avaliableAlign = avaliableAlignArray[i];
+        
+        if(align.toLowerCase().trim() === avaliableAlign){
+          align = avaliableAlign;
+          alignmentAccepted = true;
+          break;
+        }
+      }
+      
+      if(!alignmentAccepted) align = '';
+      self.settings.alignArray.push(align);
 
       if (ordinationPriorityIndex !== undefined) {
         _ordenationPriorityIndexArray.push(
@@ -99,10 +116,10 @@
 
     function addColumnProperty(property, formatType) {
       self.settings.elementsProperties.push(
-        property || ""
+        property || ''
       );
 
-      if (formatType && formatType.toUpperCase && formatType.toUpperCase() === "DATE") {
+      if (formatType && formatType.toUpperCase && formatType.toUpperCase() === 'DATE') {
         self.settings.formatDataIndexArray.push(
           self.settings.elementsProperties.length - 1
         );
@@ -119,10 +136,10 @@
       self.settings.elementsProperties.push(
         {
           iconButton: {
-            icon: icon || "",
-            tooltip: tooltip || "",
-            classButton: classButton || "",
-            successMsg: successMsg || "",
+            icon: icon || '',
+            tooltip: tooltip || '',
+            classButton: classButton || '',
+            successMsg: successMsg || '',
             buttonFuntion: buttonFuntion || function () { console.log('buttonFunction not implemented.') },
             returnsSuccess: returnsSuccess || false,
             renderElement: renderElement || false,
@@ -132,13 +149,13 @@
           }
         }
       );
-      _addEmptyHeaderIfNeed();
+      _addEmptyHeaderIfNeed('5','center');
       return self;
     }
 
-    function _addEmptyHeaderIfNeed() {
+    function _addEmptyHeaderIfNeed(flex, align) {
       if (self.settings.elementsProperties.length > self.settings.headers.length) {
-        self.addHeader("");
+        self.addHeader('', flex, align);
       }
 
       return self;

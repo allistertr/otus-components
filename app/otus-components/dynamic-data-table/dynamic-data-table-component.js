@@ -17,6 +17,7 @@
           formatDataPropertiesArray: '<',
           
           tableTitle: '<',
+          alignArray: '<',
           flexArray: '<',
           orderIndices: '<',
           numberFieldsAlignedLeft: '<',
@@ -50,7 +51,9 @@
       self.selectedItemCounter = 0;
   
       self.table;
-  
+      
+      self.defaultAlign = 'left';
+      
       self.orderQuery;
       self.orderInverse = false;
       self.error;
@@ -121,6 +124,7 @@
           self.formatDataPropertiesArray = _settings.formatDataPropertiesArray;
           self.tableTitle = _settings.tableTitle;
           self.flexArray = _settings.flexArray;
+          self.alignArray = _settings.alignArray;
           self.orderIndices = _settings.orderIndices;
           self.numberFieldsAlignedLeft = _settings.numberFieldsAlignedLeft;
           self.selectedColor = _settings.selectedColor;
@@ -134,8 +138,10 @@
           self.hideDelayTime = _settings.hideDelayTime;
         }
         
-        if(!self.numberFieldsAlignedLeft) self.numberFieldsAlignedLeft = 1;
-  
+        // if(!self.numberFieldsAlignedLeft) self.numberFieldsAlignedLeft = 1;
+        
+        if(!self.flexArray) self.flexArray = [];
+        if(!self.alignArray) self.alignArray = [];
         if(!self.hoverColor) self.hoverColor = '#EEEEEE';
         if(!self.selectedColor) self.selectedColor = '#F5F5F5';
         if(!self.rowsPerPageArray) self.rowsPerPageArray = [10,25,50,100,250,500,1000];
@@ -146,6 +152,8 @@
         if(!self.formatDataPropertiesArray) self.formatDataPropertiesArray = [];
         if(!self.hideDelayTime) self.hideDelayTime = 3000;
         if(!self.callbackAfterChange) self.callbackAfterChange = function(){};
+
+        _alignArrayPopulate();
 
         self.error = {
           isError: false,
@@ -164,6 +172,49 @@
         });
       }
 
+      function _getAlignAccepted(align) {
+        var avaliableAlignArray = ['right', 'left', 'center'];
+        var alignAccepted = align;
+        var alignmentAccepted = false;
+        
+        if(typeof align !== 'string') alignAccepted = '';
+        
+        for (var i = 0; i < avaliableAlignArray.length; i++) {
+          var avaliableAlign = avaliableAlignArray[i];
+          if(alignAccepted.toLowerCase().trim() === avaliableAlign){
+            alignAccepted = avaliableAlign;
+            alignmentAccepted = true;
+            break;
+          }
+        }
+        
+        if(!alignmentAccepted) alignAccepted = self.defaultAlign;
+
+        return alignAccepted;
+      }
+
+      function _alignArrayPopulate(){
+        var newAlignArray = [];
+
+        if(self.alignArray && self.alignArray.length){
+          self.alignArray.forEach(function(align) {
+            newAlignArray.push(_getAlignAccepted(align));
+          });
+        } else if (self.numberFieldsAlignedLeft){
+          self.elementsProperties.forEach(function(element, index){
+            var tmpAlign = index < self.numberFieldsAlignedLeft ?  'left' : 'right';
+            newAlignArray.push(tmpAlign);
+          });
+        }
+
+        self.elementsProperties.forEach(function(element, index){
+          if(newAlignArray[index] === undefined){
+            newAlignArray.push(self.defaultAlign);
+          }
+        });
+
+        self.alignArray = newAlignArray;
+      }
 
       function _refreshGrid(newElementsArray){
         self.elementsArray = newElementsArray || self.elementsArray;
@@ -285,12 +336,8 @@
         if(array === undefined){
           array = [];
         }
-  
-        if(index < self.numberFieldsAlignedLeft){
-          retClass = retClass + ' dynamic-table-column-left ';
-        } else {
-          retClass = retClass + ' dynamic-table-column-right ';
-        }
+        
+        retClass = retClass + ' dynamic-table-column-' + self.alignArray[index] || self.defaultAlign + ' ';
   
         if(index === 0 && self.disableCheckbox){
             retClass = retClass + ' dynamic-table-column-first ';
@@ -617,11 +664,9 @@
         }
       }
 
-
       function _removeRow(row) {
         self.elementsArray.splice(row.index, 1);
       }
-
 
       function _updateRow(element, row){
         var updatedRow = _createRow(element, row.index);
@@ -630,12 +675,28 @@
         row.columns = updatedRow.columns;
       }
 
+      function _isValidElement(element){
+        var isvalid = false;
+        if(element && self.elementsProperties.length){
+          for (var i = 0; i < self.elementsProperties.length; i++) {
+            var fullProperty = self.elementsProperties[i];
+            if(typeof fullProperty === "string"){
+              var property = fullProperty.split(".")[0];
+              if(element[property]){
+                isvalid = true;
+                break;
+              }
+            }
+          }
+        }
+        return isvalid;
+      }
 
       function iconButtonClick(structure, row){
         row.specialFieldClicked = true;
         
         var _actionFuntion = function(returnedElement) {
-          if(!returnedElement){
+          if(!_isValidElement(returnedElement)){
             returnedElement = self.table.fullRows[row.index];
           }
 
@@ -671,8 +732,6 @@
         } else {
           _actionFuntion();
         }
-  
-        
       }
     }
   }());
