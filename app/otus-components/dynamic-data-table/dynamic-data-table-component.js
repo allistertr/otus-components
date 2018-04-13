@@ -42,10 +42,11 @@
   
     Controller.$inject = [
       '$filter',
-      '$mdToast'
+      '$mdToast',
+      '$scope'
     ];
   
-    function Controller($filter, $mdToast) {
+    function Controller($filter, $mdToast, $scope) {
       var self = this;
   
       self.selectedItemCounter = 0;
@@ -98,6 +99,18 @@
       self.currentRowOnHover;
 
       function onInit() {
+        if(!$scope.safeApply){ 
+          $scope.safeApply = function(fn) {
+            var phase = this.$root.$$phase;
+            if(phase == '$apply' || phase == '$digest') {
+              if(fn && (typeof(fn) === 'function')) {
+                fn();
+              }
+            } else {
+              this.$apply(fn);
+            }
+          };
+        }
         _initializeDefaultValues()
         _setOrderQuery();
   
@@ -220,6 +233,7 @@
         self.elementsArray = newElementsArray || self.elementsArray;
         self.selectedItemCounter = 0;
         self.creacteTable();
+        $scope.safeApply();
       }
 
       function _havePagination(){

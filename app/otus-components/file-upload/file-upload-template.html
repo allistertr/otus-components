@@ -34,7 +34,7 @@
   .file-upoad-button {
     position: relative;
     top: -36px;
-    
+    margin-bottom: -36px;
   }
 
   .animate-if.ng-enter,
@@ -62,12 +62,22 @@
   </md-button>
 
   <div layout="column" layout-align="center center" class="file-uplopad">
-    <div drop-file propagate-to-children="true" class="file-upload-box animated-all-transition"
-      layout="column" layout-align="center center" flex="50">
+    <div drop-file 
+      multiple-files="$ctrl.multipleFiles" 
+      files="$ctrl.files" 
+      individual-validation-function="$ctrl.individualValidationFunction"
+      extension-array="$ctrl.extensionArray"
+      function-when-select-files="$ctrl.functionWhenSelectFiles"
+      class="file-upload-box animated-all-transition"
+      layout="column" layout-align="center center" flex="50"
+    >
       <span ng-if="!$ctrl.fileTitle.length" class="file-upload-title animate-if">{{$ctrl.title}}</span>
       <span ng-if="!$ctrl.fileTitle.length" class="file-upload-subtitle animate-if">{{$ctrl.subtitle}}</span>
     </div>
-    <md-button ng-if="!$ctrl.fileTitle.length" class="md-fab md-primary file-upoad-button animate-if">
+    <md-button ng-if="!$ctrl.fileTitle.length" 
+      class="md-fab md-primary file-upoad-button animate-if"
+      ng-click="$ctrl.upload()"
+    >
       <md-icon md-font-set="material-icons">file_upload</md-icon>
       <md-tooltip md-direction="right">{{$ctrl.buttonTooltip}}</md-tooltip>
     </md-button>
@@ -104,6 +114,8 @@
     
     <dynamic-data-table flex 
       dynamic-table-settings="$ctrl.dynamicTableSettings"
+      elements-array="$ctrl.files"
+      table-update-function="$ctrl.updateDataTable"
     >
     </dynamic-data-table>
 

@@ -9,8 +9,10 @@
         teste: '<',
         title: '<',
         subtitle: '<',
-        buttonTooltip: '<'
-
+        acceptArray: '<',
+        buttonTooltip: '<',
+        multipleFiles: '<',
+        extensionArray: '<'
       },
       controller: Controller
     });
@@ -26,9 +28,40 @@
 
     self.$onInit = onInit;
 
+    self.accept = '';
     self.fileTitle = '';
     self.date = new Date();
-    self.filesArray = []
+    self.updateDataTable;
+    
+    self.inputFile;
+
+    self.upload = function(){
+      console.log('eeee')
+      self.inputFile.click();
+    };
+
+    self.filesArray = [];
+    
+    self.files = [];
+    self.multipleFiles = true;
+    self.individualValidationFunction = individualValidationFunction;
+    self.functionWhenSelectFiles = functionWhenSelectFiles;
+
+    function inputChange(event) {
+      console.log(event.target.files);
+    }
+
+    function individualValidationFunction(files){
+      console.log('individualValidationFunction', files);
+      return true;
+    }
+
+    function functionWhenSelectFiles(files){
+      console.log('functionWhenSelectFiles', files);
+
+      self.updateDataTable(files);
+    }
+
 
     self.removeElement = function (element) {
       element.file.state = 'Excluido';
@@ -54,33 +87,52 @@
     }
 
     function onInit() {
+      self.extensionArray = ['sys'];//'gif','jpg','jpeg','png','doc','docx'];
+      
+      var array = self.extensionArray || [];
+      for (var i = 0; i < array.length; i++) {
+        var extension = array[i];
+        extension = extension.replace('.','').replace(',','').trim();
+        self.accept = self.accept + (i ? ', .' : '.') + extension;
+      } 
+      console.log(self.accept)
+
+      //self.accept=".gif,.jpg,.jpeg,.png,.doc,.docx";
+
+      self.multipleFiles = true;
+
+      self.inputFile = angular.element('<input id="fileInput" type="file" class="ng-hide">');
+      self.inputFile.attr('accept', self.accept);
+      self.inputFile.attr('multiple', self.multipleFiles);
+      self.inputFile.on('change', e => inputChange(e));
+
       _buildDialogs();
 
       self.dynamicTableSettings = DynamicTableSettingsFactory.create()
       //header, flex, align, ordinationPriorityIndex
-      .addHeader('Arquivo', '', 'left', 30)
+      .addHeader('Arquivo', '', 'left')
       //property, formatType
-      .addColumnProperty('file.name')
+      .addColumnProperty('name')
 
       //header, flex, align, ordinationPriorityIndex
       .addHeader('Tipo', '', 'center')
       //property, formatType
-      .addColumnProperty('file.type')
+      .addColumnProperty('extension')
 
       //header, flex, align, ordinationPriorityIndex
-      .addHeader('Tamanho', '', '', 5)
+      .addHeader('Tamanho', '', '')
       //property, formatType
-      .addColumnProperty('file.length')
+      .addColumnProperty('displaySize')
 
       //header, flex, align, ordinationPriorityIndex
-      .addHeader('Status', '', 'center', 3)
+      .addHeader('Status', '', 'center')
       //property, formatType
-      .addColumnProperty('file.state')
+      .addColumnProperty('state')
 
       //header, flex, align, ordinationPriorityIndex
-      .addHeader('Data', '', '', 4)
+      .addHeader('Data', '', '')
       //property, formatType
-      .addColumnProperty('file.nd', 'DATE')
+      .addColumnProperty('date', 'DATE')
 
       //icon, tooltip, classButton, successMsg,
       //buttonFuntion, returnsSuccess, renderElement, renderGrid, removeElement, receiveCallback
@@ -103,9 +155,9 @@
         self.executCallback, false, false, true, true, true
       )
       
-      .setElementsArray(self.filesArray)
+      //.setElementsArray(self.files)
       .setCallbackAfterChange(self.callbackAfterChange)
-      .setTableUpdateFunction(self.updateDataTable)
+      //.setTableUpdateFunction(self.updateDataTable)
       .setTitle('Lista de Arquivos')
       .setNumberFieldsAlignedLeft(5)
       .setFormatData("'Dia - 'dd/MM/yy")

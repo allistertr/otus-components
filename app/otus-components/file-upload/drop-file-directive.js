@@ -7,17 +7,22 @@
 
   Directive.$inject = [
     '$mdToast',
-    '$timeout'
+    '$timeout',
+    'otus.components.FileUploadFactory'
   ];
 
-  function Directive($mdToast, $timeout) {
+  function Directive($mdToast, $timeout, FileUploadFactory) {
     return {
       scope: {
-        changeParent: '<',
-        propagateToChildren: '<'
+        files: '=',
+        multipleFiles: '<',
+        extensionArray: '<',
+        functionWhenSelectFiles: '=',
+        individualValidationFunction: '=',
       },
       restrict: 'A',
       link: function (scope, element, attr) {
+        var hideDelayTime = 5000;
         function onDragleave(e) {
           FileDragHover(e);
         };
@@ -30,80 +35,71 @@
           FileDrop(e);
         };
 
-
-        function getRoundedAndUnitSize(size) {
-          var multiplier = 1024;          
-          var dividedSize = size;
-          var unitIndex = 0;
-          var unitList = [
-            'Byte',
-            'KB',
-            'mb',
-            'GB',
-            'TB',
-            'PB',
-            'EB',
-            'ZB',
-            'YB'
-          ];
-          
-          if(size > multiplier){
-            while (dividedSize > multiplier) {
-              unitIndex++;
-              dividedSize = dividedSize / multiplier;
-            }
-          }
-          
-          return {
-            size: dividedSize.toFixed(1),
-            unit: unitList[unitIndex]
-          };
-        }
-
-        function getNameAndExtension(fullName){
-          var extensionIndex = fullName.lastIndexOf('.');
-          var extension = extensionIndex > 0 ? fullName.substring(extensionIndex + 1) : undefined;
-          var name = extensionIndex > 0 ? fileName.substring(0,28) : fullName;
-          
-          return {
-            name: name,
-            extension: extension
-          };
+        function _showMsg(msg){
+          $mdToast.show(
+            $mdToast.simple()
+            .textContent(msg)
+            .hideDelay(hideDelayTime)
+          );
         }
 
         function FileDrop(e) {
           FileDragHover(e);
-          console.log(e)
           if (e.preventDefault) e.preventDefault();
           if (e.stopPropogation) e.stopPropogation();
-
-          // fetch FileList object
           var files = e.target.files || e.dataTransfer.files;
-          console.log("files", files)
-          // process all File objects
-          for (var i = 0, f; f = files[i]; i++) {
-            //ParseFile(f);
-            console.log(f);
+          scope.files = [];
+          var status = {
+            fileAccepted: 0,
+            fileRejected: 0
+          };
+          if(!scope.multipleFiles && files.length > 1){
+            _showMsg('Selecione apenas um arquivo por vez.');
+          } else {
+            for (var i = 0, file; file = files[i]; i++) {
+              var currentFile = FileUploadFactory.createWithFile(file);
+              if(_validation(currentFile)){
+                currentFile.isValid = true;
+                console.log(currentFile);
+                scope.files.push(currentFile);
+                status.fileAccepted++;
+              } else {
+                status.fileRejected++;
+              }
+            }
+            var msg = '';
+            if(status.fileAccepted) msg+= status.fileAccepted + ' arquivo(s) selecionado(s). \n'
+            if(status.fileRejected) msg+= status.fileRejected + ' arquivo(s) rejeitado(s). \n'
+            _showMsg(msg);
+            if(scope.functionWhenSelectFiles) scope.functionWhenSelectFiles(scope.files);
           }
-
         }
 
-        scope.$$postDigest(function () {
-          console.log('scope.propagateToChildren', scope.propagateToChildren)
-          if (scope.propagateToChildren) {
-            var children = element.children()
-
-            for (var i = 0; i < children.length; i++) {
-              var child = children[i];
-              console.log("child", { a: child })
+        function _validationExtention(currentFile) {
+          var array = scope.extensionArray || [];
+          var isValid = array.length ? false : true;
+          for (var i = 0; i < array.length; i++) {
+            var extension = array[i];
+            extension = extension.replace('.','').replace(',','').trim();
+            if(extension === '*' || extension === currentFile.extension){
+              isValid = true;
+              break;
             }
           }
-        });
+          return isValid;
+        }
 
+        function _validation(currentFile) {
+          var isValid = false;
+          isValid = _validationExtention(currentFile);
+          if(isValid && scope.individualValidationFunction){
+            isValid = scope.individualValidationFunction(currentFile);
+          }
+          return isValid;
+        }
 
         function FileDragHover(e) {
           var currentElement = element[0];
-
           e.preventDefault();
           if (e.type == "dragover") {
             if (!currentElement.classList.contains('draghover')) currentElement.classList.add("draghover")
@@ -111,7 +107,6 @@
             currentElement.classList.remove('draghover')
           }
         }
-
         element.on('dragleave', onDragleave);
         element.on('dragover', onDragover);
         //element.bind('drop', FileDrop);
