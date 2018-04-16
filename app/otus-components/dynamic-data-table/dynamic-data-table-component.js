@@ -125,8 +125,6 @@
         if(self.dynamicTableSettings){
           var _settings = self.dynamicTableSettings;
           _settings = _settings.getSettings ? _settings.getSettings() : _settings;
-          console.log(_settings)
-
           self.headers = _settings.headers;
           self.elementsArray = _settings.elementsArray;
           self.elementsProperties = _settings.elementsProperties;

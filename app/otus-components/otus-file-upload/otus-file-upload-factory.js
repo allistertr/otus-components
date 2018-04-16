@@ -3,7 +3,7 @@
 
   angular
     .module('otus.components')
-    .factory('otus.components.FileUploadFactory', Factory);
+    .factory('otus.components.OtusFileUploadFactory', Factory);
 
   Factory.$inject = [
     '$mdToast',
@@ -61,7 +61,7 @@
         var nameAndExtension = getNameAndExtension(file.name);
         var roundedAndUnitSize = getRoundedAndUnitSize(file.size);
         self.name = nameAndExtension.name;
-        self.extension = nameAndExtension.extension;
+        self.extension = nameAndExtension.extension || '';
         self.displaySize = roundedAndUnitSize.size + ' ' + roundedAndUnitSize.unit;
         self.size = roundedAndUnitSize.size;
         self.unit = roundedAndUnitSize.unit;

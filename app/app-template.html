@@ -1,19 +1,22 @@
 <div layout="column" flex layout-aligin="start none">
-    <h2>App Template</h2>
-    <h2>{{$ctrl.teste}}</h2>
+  <br>
+  
+  <otus-file-upload 
+    files="$ctrl.files"
+    drop-title="$ctrl.dropTitle"
+    subtitle="$ctrl.subtitle"
+    accept-array="$ctrl.acceptArray"
+    button-tooltip="$ctrl.buttonTooltip"
+    multiple-files="true"
+    extension-array="['sys', 'xls', 'xlsx','css']"
+    function-when-select-files="$ctrl.functionWhenSelectFiles"
+    individual-validation-function="$ctrl.individualValidationFunction"
+    disable="true"
+  />
 
-    <div>
-        <md-button class="md-raised">Button</md-button>
-    </div>
-
-    <div>
-        <md-input-container>
-            <label>Title</label>
-            <input name="myFile" type="file">
-        </md-input-container>
-    </div>
-
-    <div flex>
-        <file-upload></file-upload>
-    </div>
+  <dynamic-data-table flex 
+    dynamic-table-settings="$ctrl.dynamicTableSettings"
+    elements-array="$ctrl.files"
+    table-update-function="$ctrl.updateDataTable"
+  />
 </div>
