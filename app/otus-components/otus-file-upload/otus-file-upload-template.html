@@ -1,27 +1,24 @@
 <style>
-  /* .otus-file-upload {} */
-
   .otus-file-upload-title {
     margin: 5px;
   }
   
   .otus-file-upload-accept{
-    opacity: 0.5;
+    color: #8c8c8c;
     font-size: .9em;
   }
 
   .otus-file-upload-subtitle {
-    opacity: 0.5;
+    color: #8c8c8c;
     font-size: .9em;
     margin: 5px;
   }
 
   .otus-file-upload-box {
     border: 1.2px dashed silver;
-    background-color: rgba(75, 75, 75, 0.01);
+    background-color: #f8f8f8;
     padding: 20px;
     padding-bottom: 30px;
-    width: 400px;
   }
 
   .animated-all-transition {
@@ -30,14 +27,12 @@
 
   .otus-file-upload-box.draghover {
     border-color: blue;
-    background-color: rgba(0, 0, 250, 0.1); 
+    background-color: #e3e1fa; 
   }
 
 
   .file-upoad-button {
-    position: relative;
-    top: -36px;
-    margin-bottom: -36px;
+    margin-bottom: 10px;
   }
 
   .animate-if.ng-enter,
@@ -55,23 +50,22 @@
     opacity: 1;
   }
 </style>
-<div layout="column" layout-align="center center" class="file-uplopad">
-  <div drop-file 
-    multiple-files="$ctrl.multipleFiles" 
-    files="$ctrl.files" 
-    disable="$ctrl.disable"
-    individual-validation-function="$ctrl.individualValidationFunction"
-    extension-array="$ctrl.extensionArray"
-    function-when-select-files="$ctrl.functionWhenSelectFiles"
-    class="otus-file-upload-box animated-all-transition"
-    layout="column" layout-align="center center" flex="50"
-  >
-    <span ng-if="$ctrl.dropTitle.length" class="otus-file-upload-title animate-if">{{$ctrl.dropTitle}}</span>
-    <span ng-if="$ctrl.accept.length" class="otus-file-upload-accept animate-if">({{$ctrl.accept}})</span>
-    <span ng-if="$ctrl.subtitle.length" class="otus-file-upload-subtitle animate-if">{{$ctrl.subtitle}}</span>
-  </div>
-  <md-button class="md-fab md-primary file-upoad-button animate-if" ng-click="$ctrl.upload()">
+<div drop-file 
+  multiple-files="$ctrl.multipleFiles" 
+  files="$ctrl.files" 
+  disable="$ctrl.disable"
+  individual-validation-function="$ctrl.individualValidationFunction"
+  extension-array="$ctrl.extensionArray"
+  function-when-select-files="$ctrl.functionWhenSelectFiles"
+  class="otus-file-upload-box animated-all-transition"
+  layout="column" layout-align="center center" flex
+>
+  <span ng-if="$ctrl.dropTitle.length" class="otus-file-upload-title animate-if">{{$ctrl.dropTitle}}</span>
+  <span ng-if="$ctrl.subtitle.length" class="otus-file-upload-subtitle animate-if">{{$ctrl.subtitle}}</span>
+  <md-button id="otusFileUploadButton" class="md-fab md-primary file-upoad-button animate-if" ng-click="$ctrl.upload()">
     <md-icon md-font-set="material-icons">file_upload</md-icon>
     <md-tooltip md-direction="right">{{$ctrl.buttonTooltip}}</md-tooltip>
   </md-button>
+  <span ng-if="$ctrl.accept.length" class="otus-file-upload-accept animate-if">Formatos suportados:</span>
+  <span ng-if="$ctrl.accept.length" class="otus-file-upload-accept animate-if">{{$ctrl.accept}}</span>
 </div>

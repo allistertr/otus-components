@@ -21,12 +21,13 @@
     });
 
   Controller.$inject = [
+    '$element',
     '$mdDialog',
     'otus.components.OtusFileUploadService',
     'otus.components.DynamicTableSettingsFactory'
   ];
 
-  function Controller($mdDialog, FileUploadService, DynamicTableSettingsFactory) {
+  function Controller($element, $mdDialog, FileUploadService, DynamicTableSettingsFactory) {
     var self = this;
     var _confirmAction;
 
@@ -37,6 +38,26 @@
     self.upload = function(){
       self.inputFile.click();
     };
+
+    // function _stopActions(e) {
+    //   console.log(e)
+    //   if (e.preventDefault) e.preventDefault();
+    //   if (e.stopPropogation) e.stopPropogation();
+    // };
+
+    // function _stopActionElementAndChildren(element) {
+    //   console.log('tttt', element)
+    //   element.ondrop = _stopActions;
+    //   element.addEventListener("drop",_stopActions);
+    //   if(!element.children) return;
+    //   console.log('children', element.children)
+    //   console.log(element[0].children.length)
+    //   for (var i = 0; i < element.children.length; i++) {
+    //     console.log('children', element.children)
+    //     var childElement = array[i];
+    //     _stopActionElementAndChildren(childElement);
+    //   }
+    // };
     
     function inputChange(event) {
       var filesArray = event.target.files;
@@ -45,7 +66,7 @@
     }
 
     function onInit() {
-      if (!self.dropTitle) self.dropTitle = 'Arraste e solte aqui o arquivo.';
+      if (!self.dropTitle) self.dropTitle = 'Arraste e solte o(s) arquivo(s).';
       if (!self.subtitle) self.subtitle = 'ou clique';
       if (!self.buttonTooltip) self.buttonTooltip = 'Adicionar Arquivo';
       self.accept = FileUploadService.getAcceptByExtensionArray(self.extensionArray);
