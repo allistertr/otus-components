@@ -1,71 +1,69 @@
-<style>
-  .otus-file-upload-title {
-    margin: 5px;
+<style> 
+  .animated-all-transition-05s {
+    transition: all 0.5s ease;
   }
   
-  .otus-file-upload-accept{
-    color: #8c8c8c;
-    font-size: .9em;
-  }
-
-  .otus-file-upload-subtitle {
-    color: #8c8c8c;
-    font-size: .9em;
-    margin: 5px;
-  }
-
   .otus-file-upload-box {
     border: 1.2px dashed silver;
     background-color: #f8f8f8;
-    padding: 20px;
-    padding-bottom: 30px;
+    padding: 10px;
   }
-
-  .animated-all-transition {
-    transition: all 0.5s ease;
+  .otus-file-upload-box.button-only {
+    padding: 10px;
   }
-
   .otus-file-upload-box.draghover {
     border-color: blue;
     background-color: #e3e1fa; 
   }
+  .otus-file-upload-box:focus {
+    outline: none;
+  }
 
+  .otus-file-upload-title {
+    /* margin: 5px; */
+  }
+  .disable .otus-file-upload-title {
+    color: #8c8c8c;
+  }
+  .otus-file-upload-subtitle {
+    margin-top: 5px;
+    font-size: .9em;
+    color: #8c8c8c;
+  }
+  .otus-file-upload-accept{
+    font-size: .9em;
+    color: #8c8c8c;
+  }
 
   .file-upoad-button {
-    margin-bottom: 10px;
-  }
-
-  .animate-if.ng-enter,
-  .animate-if.ng-leave {
-    transition: all ease 0.5s;
-  }
-
-  .animate-if.ng-enter,
-  .animate-if.ng-leave.ng-leave-active {
-    opacity: 0;
-  }
-
-  .animate-if.ng-leave,
-  .animate-if.ng-enter.ng-enter-active {
-    opacity: 1;
+    /* margin: 10px; */
   }
 </style>
-<div drop-file 
+<div 
+  ng-if="!$ctrl.disableDrop"
+  drop-file 
   multiple-files="$ctrl.multipleFiles" 
   files="$ctrl.files" 
   disable="$ctrl.disable"
   individual-validation-function="$ctrl.individualValidationFunction"
   extension-array="$ctrl.extensionArray"
   function-when-select-files="$ctrl.functionWhenSelectFiles"
-  class="otus-file-upload-box animated-all-transition"
-  layout="column" layout-align="center center" flex
+  ng-class="($ctrl.disable? ' disable ' : '') + ($ctrl.buttonOnly? ' button-only ' : '') + ' otus-file-upload-box animated-all-transition-05s'"
+  layout="column" layout-align="center center" 
+  ng-click="$ctrl.upload()"
 >
-  <span ng-if="$ctrl.dropTitle.length" class="otus-file-upload-title animate-if">{{$ctrl.dropTitle}}</span>
-  <span ng-if="$ctrl.subtitle.length" class="otus-file-upload-subtitle animate-if">{{$ctrl.subtitle}}</span>
-  <md-button id="otusFileUploadButton" class="md-fab md-primary file-upoad-button animate-if" ng-click="$ctrl.upload()">
-    <md-icon md-font-set="material-icons">file_upload</md-icon>
-    <md-tooltip md-direction="right">{{$ctrl.buttonTooltip}}</md-tooltip>
+  <span ng-if="!$ctrl.buttonOnly && $ctrl.dropTitle.length" class="otus-file-upload-title">{{$ctrl.dropTitle}}</span>
+  <span ng-if="!$ctrl.buttonOnly && $ctrl.subtitle.length" class="otus-file-upload-subtitle">{{$ctrl.subtitle}}</span>
+  <md-button id="otusFileUploadButton" ng-class="$ctrl.buttonClass + ' md-fab file-upoad-button'" ng-disabled="$ctrl.disable">
+    <md-icon md-font-set="material-icons">{{$ctrl.buttonIcon}}</md-icon>
+    <md-tooltip md-direction="{{$ctrl.buttonTooltipDirection}}">{{$ctrl.buttonTooltip + ($ctrl.buttonOnly ? ' - ' + $ctrl.accept : '')}}</md-tooltip>
   </md-button>
-  <span ng-if="$ctrl.accept.length" class="otus-file-upload-accept animate-if">Formatos suportados:</span>
-  <span ng-if="$ctrl.accept.length" class="otus-file-upload-accept animate-if">{{$ctrl.accept}}</span>
+  <span ng-if="!$ctrl.buttonOnly && $ctrl.accept.length" class="otus-file-upload-accept">{{$ctrl.formatInfoLabel + ' ' + $ctrl.accept}}</span>
+</div>
+
+<div ng-if="$ctrl.disableDrop">
+  <md-button id="otusFileUploadButton" ng-class="$ctrl.buttonClass + ' md-fab'" ng-disabled="$ctrl.disable" ng-click="$ctrl.upload()">
+    <md-icon md-font-set="material-icons">{{$ctrl.buttonIcon}}</md-icon>
+    <md-tooltip md-direction="{{$ctrl.buttonTooltipDirection}}">{{$ctrl.buttonTooltip + ' - ' + $ctrl.accept}}</md-tooltip>
+  </md-button>
 </div>

@@ -24,7 +24,7 @@
     var _ordenationPriorityIndexArray = [
       //{headerIndex: 0, ordenationPriorityIndex: 1}
     ];
-    
+
     self.settings = {
       elementsArray: [],
       elementsProperties: [],
@@ -43,6 +43,7 @@
       disableCheckbox: false,
       disableFilter: false,
       disableReorder: false,
+      disableShowAll: false,
       disablePagination: false,
       selectedColor: undefined,
       hoverColor: undefined,
@@ -65,6 +66,7 @@
     self.setSelectUnselectFunction = setSelectUnselectFunction;
     self.setCheckbox = setCheckbox;
     self.setFilter = setFilter;
+    self.setShowAll = setShowAll;
     self.setReorder = setReorder;
     self.setPagination = setPagination;
     self.setSelectedColor = setSelectedColor;
@@ -73,8 +75,21 @@
     self.addHeader = addHeader;
     self.addColumnProperty = addColumnProperty;
     self.addColumnIconButton = addColumnIconButton;
+    self.addIconWithFunction = addIconWithFunction;
 
     function setProperty() {
+      return self;
+    }
+
+    function addIconWithFunction(validate) {
+      self.settings.elementsProperties.push(
+        {
+          iconWithFunction: {
+            iconFunction: validate || function () { }
+          }
+        }
+      );
+      _addEmptyHeaderIfNeed('10', 'center');
       return self;
     }
 
@@ -82,25 +97,25 @@
       self.settings.headers.push(
         header || ''
       );
-      
+
       if (flex === undefined) flex = '';
       self.settings.flexArray.push(flex);
-      
+
       var alignmentAccepted = false;
       var avaliableAlignArray = ['right', 'left', 'center'];
-      if(typeof align !== 'string') align = '';
-      
+      if (typeof align !== 'string') align = '';
+
       for (var i = 0; i < avaliableAlignArray.length; i++) {
         var avaliableAlign = avaliableAlignArray[i];
-        
-        if(align.toLowerCase().trim() === avaliableAlign){
+
+        if (align.toLowerCase().trim() === avaliableAlign) {
           align = avaliableAlign;
           alignmentAccepted = true;
           break;
         }
       }
-      
-      if(!alignmentAccepted) align = '';
+
+      if (!alignmentAccepted) align = '';
       self.settings.alignArray.push(align);
 
       if (ordinationPriorityIndex !== undefined) {
@@ -149,7 +164,7 @@
           }
         }
       );
-      _addEmptyHeaderIfNeed('10','center');
+      _addEmptyHeaderIfNeed('10', 'center');
       return self;
     }
 
@@ -175,7 +190,7 @@
       });
 
       self.settings.orderIndices = [];
-      ordenationArray.forEach(function(ordenation){
+      ordenationArray.forEach(function (ordenation) {
         self.settings.orderIndices.push(ordenation.headerIndex);
       })
       return self.settings;
@@ -235,6 +250,12 @@
     function setFilter(showFilter) {
       showFilter = showFilter ? true : false;
       self.settings.disableFilter = !showFilter;
+      return self;
+    }
+
+    function setShowAll(showAllButton) {
+      showAllButton = showAllButton ? true : false;
+      self.settings.disableShowAll = !showAllButton;
       return self;
     }
 

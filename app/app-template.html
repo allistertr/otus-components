@@ -1,22 +1,54 @@
-<div layout="column" flex layout-aligin="start none">
-  <br>
-  
-  <otus-file-upload 
-    files="$ctrl.files"
-    drop-title="$ctrl.dropTitle"
-    subtitle="$ctrl.subtitle"
-    accept-array="$ctrl.acceptArray"
-    button-tooltip="$ctrl.buttonTooltip"
-    multiple-files="true"
-    extension-array="['sys', 'xls', 'xlsx','css']"
-    function-when-select-files="$ctrl.functionWhenSelectFiles"
-    individual-validation-function="$ctrl.individualValidationFunction"
-    disable="false"
-  />
+<div layout="column" flex flex>
+  <div flex layout="column">
+    <md-button class="md-primary" ng-click="$ctrl.buttonOnly = !$ctrl.buttonOnly">
+      {{$ctrl.buttonOnly ? "Todos os Campos" : "Somente Botão"}}
+    </md-button>
+    <md-button class="md-primary" ng-click="$ctrl.disableDrop = !$ctrl.disableDrop">
+      {{$ctrl.disableDrop ? "Ativar Área Dropável" : "Desativar Área Dropável"}}
+    </md-button>
+    <md-button class="md-primary" ng-click="$ctrl.disable = !$ctrl.disable">
+      {{$ctrl.disable ? "Ativar" : "Desativar"}}
+    </md-button>
+    
+    
+    
+    <div flex layout="column">
+      <div layout="{{$ctrl.buttonOnly ? 'column' : 'row'}}" layout-align="center center">
+        <otus-file-upload flex="80"
+          files="$ctrl.files"
+          multiple-files="true"
+          disable="$ctrl.disable"
+          accept-array="$ctrl.acceptArray"
+          extension-array="['*']"
+          function-when-select-files="$ctrl.functionWhenSelectFiles"
+          individual-validation-function="$ctrl.individualValidationFunction"
+          button-class="'md-primary' + ($ctrl.disableDrop ? ' md-fab-bottom-right ' : '')"
+          button-only="$ctrl.buttonOnly"
+          disable-drop="$ctrl.disableDrop"
+          button-icon=""
+          button-tooltip="'Selecionone seu(s) arquivo(s)'"
+          button-tooltip-direction="'top'"
+        />
+        <!-- 
+          extension-array="['sys', 'xls', 'xlsx','css']"
+          subtitle="$ctrl.subtitle"
+          drop-title="$ctrl.dropTitle"
+          button-tooltip="$ctrl.buttonTooltip"
+          format-info-label="$ctrl.formatInfoLabel" 
+          button-class="'md-primary md-fab-bottom-right'"
+        -->
+      </div>
+    
+      <md-content layout="column" flex>
+        <div flex layout="row">
+          <dynamic-data-table flex 
+            dynamic-table-settings="$ctrl.dynamicTableSettings"
+            elements-array="$ctrl.files"
+            table-update-function="$ctrl.updateDataTable"
+          />
+        </div>
+    </md-content>
+  </div>
 
-  <dynamic-data-table flex 
-    dynamic-table-settings="$ctrl.dynamicTableSettings"
-    elements-array="$ctrl.files"
-    table-update-function="$ctrl.updateDataTable"
-  />
+</div>
 </div>

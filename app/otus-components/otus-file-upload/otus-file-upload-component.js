@@ -8,12 +8,18 @@
       bindings: {
         files: '=',
         disable: '<',
+        disableDrop: '<',
         subtitle: '<',
         dropTitle: '<',
         acceptArray: '<',
+        buttonOnly: '<',
+        buttonIcon: '<',
+        buttonClass: '<',
         buttonTooltip: '<',
         multipleFiles: '<',
         extensionArray: '<',
+        formatInfoLabel: '<',
+        buttonTooltipDirection: '<',
         functionWhenSelectFiles: '=',
         individualValidationFunction: '='
       },
@@ -36,28 +42,8 @@
     self.inputFile;
 
     self.upload = function(){
-      self.inputFile.click();
+      if(!self.disable) self.inputFile.click();
     };
-
-    // function _stopActions(e) {
-    //   console.log(e)
-    //   if (e.preventDefault) e.preventDefault();
-    //   if (e.stopPropogation) e.stopPropogation();
-    // };
-
-    // function _stopActionElementAndChildren(element) {
-    //   console.log('tttt', element)
-    //   element.ondrop = _stopActions;
-    //   element.addEventListener("drop",_stopActions);
-    //   if(!element.children) return;
-    //   console.log('children', element.children)
-    //   console.log(element[0].children.length)
-    //   for (var i = 0; i < element.children.length; i++) {
-    //     console.log('children', element.children)
-    //     var childElement = array[i];
-    //     _stopActionElementAndChildren(childElement);
-    //   }
-    // };
     
     function inputChange(event) {
       var filesArray = event.target.files;
@@ -66,9 +52,13 @@
     }
 
     function onInit() {
-      if (!self.dropTitle) self.dropTitle = 'Arraste e solte o(s) arquivo(s).';
-      if (!self.subtitle) self.subtitle = 'ou clique';
-      if (!self.buttonTooltip) self.buttonTooltip = 'Adicionar Arquivo';
+      if (self.dropTitle === undefined) self.dropTitle = 'Arraste e solte o(s) arquivo(s)';
+      if (self.subtitle === undefined) self.subtitle = 'ou clique';
+      if (self.formatInfoLabel === undefined) self.formatInfoLabel = 'Formatos suportados:';
+      if (self.buttonTooltipDirection === undefined) self.buttonTooltipDirection = 'right';
+      if (self.buttonTooltip === undefined) self.buttonTooltip = 'Selecionar Arquivo(s)';
+      if (self.buttonClass === undefined) self.buttonClass = 'md-primary';
+      if (self.buttonIcon === undefined) self.buttonIcon = 'file_upload';
       self.accept = FileUploadService.getAcceptByExtensionArray(self.extensionArray);
       self.inputFile = angular.element('<input id="fileInput" type="file" class="ng-hide">');
       self.inputFile.attr('accept', self.accept);

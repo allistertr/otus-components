@@ -7,7 +7,7 @@
   'use strict';
 
   angular.module('otus.components').component('dynamicDataTable', {
-    template: '<style>\n        .my-border {\n          border: 1px solid blue;\n        }\n      \n        .dynamic-structure {\n          margin: 16px;\n        }\n      \n        .dynamic-table-body-row:focus,\n        .dynamic-table-header-column:focus {\n          outline: none;\n        }\n      \n        .dynamic-table-body-row,\n        .dynamic-table-header-column {\n          cursor: pointer;\n        }\n      \n        .dynamic-table-row-selected {\n          background-color: #F5F5F5;\n        }\n      \n        .dynamic-table md-checkbox {\n          position: relative;\n          top: 7.5px;\n        }\n      \n        .dynamic-table md-icon.dynamic-arrow-icon,\n        .dynamic-table md-icon.dynamic-arrow-icon-inverse {\n          -webkit-transition-duration: 0.5s;\n          -moz-transition-duration: 0.5s;\n          -o-transition-duration: 0.5s;\n          transition-duration: 0.5s;\n      \n          -webkit-transition-property: -webkit-transform;\n          -moz-transition-property: -moz-transform;\n          -o-transition-property: -o-transform;\n          transition-property: transform;\n        }\n      \n        .dynamic-table md-icon.dynamic-arrow-icon {\n          -moz-transform: rotate(0deg);\n          -webkit-transform: rotate(0deg);\n          -webkit-transform: rotate(0deg);\n          transform: rotate(0deg);\n        }\n      \n        .dynamic-table md-icon.dynamic-arrow-icon-inverse {\n          -moz-transform: rotate(180deg);\n          -webkit-transform: rotate(180deg);\n          -webkit-transform: rotate(180deg);\n          transform: rotate(180deg);\n        }\n      \n        .dynamic-table-body-column,\n        .dynamic-table-header-column {\n          padding: 4px 10px;\n        }\n      \n        .dynamic-table-body-row,\n        .dynamic-table-header-row {\n          border-bottom: 1px solid #E0DFDF;\n        }\n      \n        .dynamic-table-column-first {\n          padding-left: 16px;\n      \n        }\n      \n        .dynamic-table-column-last {\n          padding-right: 16px;\n        }\n      \n      \n      \n        .dynamic-table-column-left {\n          text-align: left;\n        }\n      \n        .dynamic-table-column-right {\n          text-align: right;\n        }\n\n        .dynamic-table-column-center {\n          text-align: center;\n        }\n      \n        .dynamic-table-expand-filter {\n          margin-top: 20px;\n        }\n      \n      \n        .dynamic-table-animated {\n          -moz-transition: transform 0.5s;\n          -webkit-transition: transform 0.5s;\n          -ms-transition: transform 0.5s;\n          -o-transition: transform 0.5s;\n          transition: transform 0.5s;\n          transition: .2s all;\n        }\n      \n        .dynamic-table-animated.ng-enter-active {\n          /*-moz-transform: scale(0.1);\n          -webkit-transform: scale(0.1);\n          -ms-transform: scale(0.1);\n          -o-transform: scale(0.1);\n          transform: scale(0.1); */\n          opacity: 1;\n        }\n      \n        .dynamic-table-animated.ng-enter {\n          /*-moz-transform: scale(0.1);\n          -webkit-transform: scale(0.1);\n          -ms-transform: scale(0.1);\n          -o-transform: scale(0.1);\n          transform: scale(0.1); */\n          opacity: 0;\n        }\n      \n        .dynamic-table-animated.ng-leave {\n          transition: 0.5s linear all;\n          opacity: 1;\n        }\n      \n        .dynamic-table-animated.ng-leave.ng-leave-active {\n          opacity: 0;\n        }\n      </style><md-whiteframe class="md-whiteframe-1dp dynamic-structure" layout="column" flex><div ng-if="$ctrl.tableTitle"><md-subheader class="md-no-sticky moment-type-title backgroud-color-default left-alignment">{{$ctrl.tableTitle}}</md-subheader></div><div ng-if="!$ctrl.tableTitle && !$ctrl.disableFilter" class="dynamic-table-expand-filter"></div><div ng-if="!$ctrl.disableFilter" layout="row" layout-align="center center" flex><div layout="row" layout-margin flex><md-input-container class="remove-errors-spacer" flex><input type="text" flex placeholder="Filtro de busca" ng-model="$ctrl.filter" ng-change="$ctrl.filterRows()" ng-model-options="{ allowInvalid: true, debounce: 500 }"></md-input-container></div><div ng-if="(!$ctrl.disablePagination && $ctrl.filter.length && $ctrl.viewPerPage)" style="padding-right:15px" class="dynamic-table-animated"><md-checkbox flex style="margin:0;" aria-label="Filtrar todos" class="md-primary" ng-checked="$ctrl.filterAll" ng-click="$ctrl.filterAllChanged()"><span class="md-body-1">Filtrar Todos</span></md-checkbox><md-tooltip md-direction="top">Exibe todos os registros encontrados</md-tooltip></div></div><div ng-if="$ctrl.error.isError"><h1>{{$ctrl.error.msg}}</h1></div><div ng-if="!$ctrl.error.isError" class="dynamic-table" flex><div ng-mouseenter="$ctrl.leaveFocus()" class="dynamic-table-header" layout="row" flex><div class="dynamic-table-header-row" layout="row" layout-align="start center" flex><div style="padding-left:15px" ng-if="!$ctrl.disableCheckbox" layout="column" flex="5" layout-align="center center"><md-checkbox flex aria-label="Selecionar Todos os Registros" class="md-primary" ng-checked="$ctrl.selectedItemCounter === $ctrl.table.rows.length" md-indeterminate="$ctrl.selectedItemCounter !== $ctrl.table.rows.length && $ctrl.selectedItemCounter>0" ng-click="$ctrl.selectDeselectAllRows()"></md-checkbox><md-tooltip md-direction="top">{{$ctrl.selectedItemCounter === $ctrl.table.rows.length ? \'Deseleciona Todos\' : \'Seleciona Todos\'}}</md-tooltip></div><div ng-if="$ctrl.disableCheckbox" style="padding-top:40px"></div><div class="{{\'dynamic-table-header-column \' + $ctrl.getColumnPositionClass($index, $ctrl.table.headers)}}" ng-repeat="header in $ctrl.table.headers track by $index" flex="{{$ctrl.getFlex($index)}}" ng-click="$ctrl.changeOrder($index)">{{header}}<md-icon ng-if="$ctrl.orderQuery === \'column\' + $index + \'.orderValue\'" ng-class="$ctrl.getOrderIcon()" md-font-set="material-icons">arrow_drop_up</md-icon></div></div></div><div class="dynamic-table-body" layout="column" flex id="dynamic-body"><div class="dynamic-table-body-row {{($ctrl.disablePagination || !$ctrl.viewPerPage || $ctrl.filterAll) ? \' dynamic-table-animated \' : \'\'}}" layout="row" layout-align="start center" flex ng-repeat="row in $ctrl.table.rows | orderBy:$ctrl.orderQuery:$ctrl.orderInverse" ng-click="$ctrl.selectDeselectRow(row)" name="bodyRow{{row.index}}" id="bodyRow{{row.index}}" ng-mouseenter="$ctrl.mouseEnter(row)" ng-mouseleave="$ctrl.mouseLeave(row)" ng-style="row.style"><div style="padding-left:15px" ng-if="!$ctrl.disableCheckbox" layout="column" flex="5" layout-align="center center"><md-checkbox ng-checked="row.selected" aria-label="Checkbox registro da linha {{row.index}}" class="md-primary"></md-checkbox></div><div ng-if="$ctrl.disableCheckbox" style="padding-top:40px"></div><div class="{{\'dynamic-table-body-column \' + $ctrl.getColumnPositionClass(column.index,row.columns)}}" ng-repeat="column in row.columns" flex="{{$ctrl.getFlex(column.index)}}"><span ng-if="!column.specialField" class="md-body-1">{{column.value}}</span><md-button ng-if="column.specialField && column.specialField.iconButton" class="md-icon-button {{column.specialField.iconButton.classButton}}" ng-click="$ctrl.iconButtonClick(column.specialField.iconButton, row)"><md-tooltip ng-if="column.specialField.iconButton.tooltip">{{column.specialField.iconButton.tooltip}}</md-tooltip><md-icon md-font-set="material-icons">{{column.specialField.iconButton.icon}}</md-icon></md-button></div></div></div><div ng-if="!$ctrl.disablePagination" ng-mouseenter="$ctrl.leaveFocus()" class="dynamic-pagination" layout="row" layout-align="start center" flex><div><div layout="row" class="md-body-1" layout-margin><md-button class="md-accent" flex ng-click="$ctrl.viewPerPageChanged()" ng-disabled="$ctrl.filterAll"><md-tooltip>{{$ctrl.viewPerPage ? \'Exibir todos os Registros: Desabilita Paginação\' : \'Exibir Registros por Página: Habilita Paginação\'}}</md-tooltip><span class="md-body-1">{{$ctrl.viewPerPage ? \'Exibir Todos\' : \'Exibir por Página\'}}</span></md-button></div></div><div layout="row" layout-align="end center" layout-padding flex ng-if="$ctrl.viewPerPage && !$ctrl.filterAll"><div><span class="md-body-1">Linhas por página:</span></div><div><md-select ng-model="$ctrl.rowPerPageDefault" aria-label="Página" style="margin:0" ng-change="$ctrl.rowPerPageChange()"><md-option ng-repeat="rowPerPage in $ctrl.rowsPerPageArray" value="{{rowPerPage}}"><span class="md-body-1">{{rowPerPage}}</span></md-option></md-select></div><div><span class="md-body-1">{{$ctrl.table.textPage}}</span></div><div><md-button class="md-icon-button" aria-label="Página Anterior" ng-disabled="!$ctrl.getIsPreviousPage()" ng-click="$ctrl.previousPage()"><md-tooltip>Página Anterior</md-tooltip><md-icon md-font-set="material-icons">keyboard_arrow_left</md-icon></md-button></div><div><md-button class="md-icon-button" aria-label="Página Seguinte" ng-disabled="!$ctrl.getIsNextPage()" ng-click="$ctrl.nextPage()"><md-tooltip>Próxima Página</md-tooltip><md-icon md-font-set="material-icons">keyboard_arrow_right</md-icon></md-button></div></div></div></div></md-whiteframe>',
+    template: '<style>\n  .my-border {\n    border: 1px solid blue;\n  }\n\n  .dynamic-structure {\n    margin: 16px;\n  }\n\n  .dynamic-table-body-row:focus,\n  .dynamic-table-header-column:focus {\n    outline: none;\n  }\n\n  .dynamic-table-body-row,\n  .dynamic-table-header-column {\n    cursor: pointer;\n  }\n\n  .dynamic-table-row-selected {\n    background-color: #F5F5F5;\n  }\n\n  .dynamic-table md-checkbox {\n    position: relative;\n    top: 7.5px;\n  }\n\n  .dynamic-table md-icon.dynamic-arrow-icon,\n  .dynamic-table md-icon.dynamic-arrow-icon-inverse {\n    -webkit-transition-duration: 0.5s;\n    -moz-transition-duration: 0.5s;\n    -o-transition-duration: 0.5s;\n    transition-duration: 0.5s;\n\n    -webkit-transition-property: -webkit-transform;\n    -moz-transition-property: -moz-transform;\n    -o-transition-property: -o-transform;\n    transition-property: transform;\n  }\n\n  md-icon.dynamic-arrow-icon {\n    -moz-transform: rotate(0deg);\n    -webkit-transform: rotate(0deg);\n    -webkit-transform: rotate(0deg);\n    transform: rotate(0deg);\n  }\n\n  md-icon.dynamic-arrow-icon-inverse {\n    -moz-transform: rotate(180deg);\n    -webkit-transform: rotate(180deg);\n    -webkit-transform: rotate(180deg);\n    transform: rotate(180deg);\n  }\n\n  .dynamic-table-body-column,\n  .dynamic-table-header-column {\n    padding: 4px 10px;\n  }\n\n  .dynamic-table-body-row,\n  .dynamic-table-header-row {\n    border-bottom: 1px solid #E0DFDF;\n  }\n\n  .dynamic-table-column-first {\n    padding-left: 16px;\n\n  }\n\n  .dynamic-table-column-last {\n    padding-right: 16px;\n  }\n\n  .dynamic-table-column-left {\n    text-align: left;\n  }\n\n  .dynamic-table-column-right {\n    text-align: right;\n  }\n\n  .dynamic-table-column-center {\n    text-align: center;\n  }\n\n  .dynamic-table-expand-filter {\n    margin-top: 20px;\n  }\n\n  .dynamic-table-animated {\n    -moz-transition: transform 0.5s;\n    -webkit-transition: transform 0.5s;\n    -ms-transition: transform 0.5s;\n    -o-transition: transform 0.5s;\n    transition: transform 0.5s;\n    transition: .2s all;\n  }\n\n  .dynamic-table-animated.ng-enter-active {\n    /*-moz-transform: scale(0.1);\n    -webkit-transform: scale(0.1);\n    -ms-transform: scale(0.1);\n    -o-transform: scale(0.1);\n    transform: scale(0.1); */\n    opacity: 1;\n  }\n\n  .dynamic-table-animated.ng-enter {\n    /*-moz-transform: scale(0.1);\n    -webkit-transform: scale(0.1);\n    -ms-transform: scale(0.1);\n    -o-transform: scale(0.1);\n    transform: scale(0.1); */\n    opacity: 0;\n  }\n\n  .dynamic-table-animated.ng-leave {\n    transition: 0.5s linear all;\n    opacity: 1;\n  }\n\n  .dynamic-table-animated.ng-leave.ng-leave-active {\n    opacity: 0;\n  }\n</style><md-whiteframe class="md-whiteframe-1dp dynamic-structure" layout="column" flex><div ng-if="$ctrl.tableTitle" layout="row" layout-align="space-between"><md-subheader class="md-no-sticky moment-type-title backgroud-color-default left-alignment">{{$ctrl.tableTitle}}</md-subheader><md-menu md-position-mode="target-right target"><md-button class="md-icon-button" ng-click="$mdOpenMenu()"><md-icon md-font-set="material-icons">menu</md-icon></md-button><md-menu-content><md-menu-item><md-button ng-click="$ctrl.orderByIndex()">Ordenar por inserção</md-button></md-menu-item></md-menu-content></md-menu></div><div ng-if="!$ctrl.tableTitle && !$ctrl.disableFilter" class="dynamic-table-expand-filter"></div><div ng-if="!$ctrl.disableFilter" layout="row" layout-align="center center" flex><div layout="row" layout-margin flex><md-input-container class="remove-errors-spacer" flex><input type="text" flex placeholder="Filtro de busca" ng-model="$ctrl.filter" ng-change="$ctrl.filterRows()" ng-model-options="{ allowInvalid: true, debounce: 500 }"></md-input-container></div><div ng-if="!$ctrl.disableShowAll && (!$ctrl.disablePagination && $ctrl.filter.length && $ctrl.viewPerPage)" style="padding-right:15px" class="dynamic-table-animated"><md-checkbox flex style="margin:0;" aria-label="Filtrar todos" class="md-primary" ng-checked="$ctrl.filterAll" ng-click="$ctrl.filterAllChanged()"><span class="md-body-1">Filtrar Todos</span></md-checkbox><md-tooltip md-direction="top">Exibe todos os registros encontrados</md-tooltip></div></div><div ng-if="$ctrl.error.isError"><h1>{{$ctrl.error.msg}}</h1></div><div ng-if="!$ctrl.error.isError" class="dynamic-table" flex><div ng-mouseenter="$ctrl.leaveFocus()" class="dynamic-table-header" layout="row" flex><div class="dynamic-table-header-row" layout="row" layout-align="start center" flex><div style="padding-left:15px" ng-if="!$ctrl.disableCheckbox" layout="column" flex="5" layout-align="center center"><md-checkbox flex aria-label="Selecionar Todos os Registros" class="md-primary" ng-checked="$ctrl.selectedItemCounter === $ctrl.table.rows.length" md-indeterminate="$ctrl.selectedItemCounter !== $ctrl.table.rows.length && $ctrl.selectedItemCounter>0" ng-click="$ctrl.selectDeselectAllRows()"></md-checkbox><md-tooltip md-direction="top">{{$ctrl.selectedItemCounter === $ctrl.table.rows.length ? \'Deseleciona Todos\' : \'Seleciona Todos\'}}</md-tooltip></div><div ng-if="$ctrl.disableCheckbox" style="padding-top:40px"></div><div class="{{\'dynamic-table-header-column \' + $ctrl.getColumnPositionClass($index, $ctrl.table.headers)}}" ng-repeat="header in $ctrl.table.headers track by $index" flex="{{$ctrl.getFlex($index)}}" ng-click="$ctrl.changeOrder($index)">{{header}}<md-icon ng-if="$ctrl.orderQuery === \'column\' + $index + \'.orderValue\'" ng-class="$ctrl.getOrderIcon()" md-font-set="material-icons">arrow_drop_up</md-icon></div></div></div><div class="dynamic-table-body" layout="column" flex id="dynamic-body"><div class="dynamic-table-body-row {{($ctrl.disablePagination || !$ctrl.viewPerPage || $ctrl.filterAll) ? \' dynamic-table-animated \' : \'\'}}" layout="row" layout-align="start center" flex ng-repeat="row in $ctrl.table.rows | orderBy:$ctrl.orderQuery:$ctrl.orderInverse" ng-click="$ctrl.selectDeselectRow(row)" name="bodyRow{{row.index}}" id="bodyRow{{row.index}}" ng-mouseenter="$ctrl.mouseEnter(row)" ng-mouseleave="$ctrl.mouseLeave(row)" ng-style="row.style"><div style="padding-left:15px" ng-if="!$ctrl.disableCheckbox" layout="column" flex="5" layout-align="center center"><md-checkbox ng-checked="row.selected" aria-label="Checkbox registro da linha {{row.index}}" class="md-primary"></md-checkbox></div><div ng-if="$ctrl.disableCheckbox" style="padding-top:40px"></div><div class="{{\'dynamic-table-body-column \' + $ctrl.getColumnPositionClass(column.index,row.columns)}}" ng-repeat="column in row.columns" flex="{{$ctrl.getFlex(column.index)}}"><span ng-if="!column.specialField" class="md-body-1">{{column.value}}</span><div ng-if="column.specialField && column.specialField.iconStructure"><md-tooltip ng-if="column.specialField.iconStructure.tooltip">{{column.specialField.iconStructure.tooltip}}</md-tooltip><md-icon class="material-icons {{column.specialField.iconStructure.class}}">{{column.specialField.iconStructure.icon}}</md-icon></div><md-button ng-if="column.specialField && column.specialField.iconButton" class="md-icon-button {{column.specialField.iconButton.classButton}}" ng-click="$ctrl.iconButtonClick(column.specialField.iconButton, row)"><md-tooltip ng-if="column.specialField.iconButton.tooltip">{{column.specialField.iconButton.tooltip}}</md-tooltip><md-icon md-font-set="material-icons">{{column.specialField.iconButton.icon}}</md-icon></md-button></div></div></div><div ng-if="!$ctrl.disablePagination" ng-mouseenter="$ctrl.leaveFocus()" class="dynamic-pagination" layout="row" layout-align="start center" flex><div><div ng-if="!$ctrl.disableShowAll" layout="row" class="md-body-1" layout-margin><md-button class="md-accent" ng-click="$ctrl.viewPerPageChanged()" ng-disabled="$ctrl.filterAll"><md-tooltip>{{$ctrl.viewPerPage ? \'Exibir todos os Registros: Desabilita Paginação\' : \'Exibir Registros por Página: Habilita Paginação\'}}</md-tooltip><span class="md-body-1">{{$ctrl.viewPerPage ? \'Exibir Todos\' : \'Exibir por Página\'}}</span></md-button></div></div><div layout="row" layout-align="end center" layout-padding flex ng-if="$ctrl.viewPerPage && !$ctrl.filterAll"><div><span class="md-body-1">Linhas por página:</span></div><div><md-select ng-model="$ctrl.rowPerPageDefault" aria-label="Página" style="margin:0" ng-change="$ctrl.rowPerPageChange()"><md-option ng-repeat="rowPerPage in $ctrl.rowsPerPageArray" value="{{rowPerPage}}"><span class="md-body-1">{{rowPerPage}}</span></md-option></md-select></div><div><span class="md-body-1">{{$ctrl.table.textPage}}</span></div><div><md-button class="md-icon-button" aria-label="Página Anterior" ng-disabled="!$ctrl.getIsPreviousPage()" ng-click="$ctrl.previousPage()"><md-tooltip>Página Anterior</md-tooltip><md-icon md-font-set="material-icons">keyboard_arrow_left</md-icon></md-button></div><div><md-button class="md-icon-button" aria-label="Página Seguinte" ng-disabled="!$ctrl.getIsNextPage()" ng-click="$ctrl.nextPage()"><md-tooltip>Próxima Página</md-tooltip><md-icon md-font-set="material-icons">keyboard_arrow_right</md-icon></md-button></div></div></div></div></md-whiteframe>',
     bindings: {
       headers: '<',
       elementsArray: '=?',
@@ -23,6 +23,7 @@
       alignArray: '<',
       flexArray: '<',
       orderIndices: '<',
+      orderByInsertion: '<',
       numberFieldsAlignedLeft: '<',
 
       selectedColor: '<',
@@ -43,9 +44,9 @@
     controller: Controller
   });
 
-  Controller.$inject = ['$filter', '$mdToast'];
+  Controller.$inject = ['$filter', '$mdToast', '$scope'];
 
-  function Controller($filter, $mdToast) {
+  function Controller($filter, $mdToast, $scope) {
     var self = this;
 
     self.selectedItemCounter = 0;
@@ -61,6 +62,7 @@
     self.$onInit = onInit;
 
     self.changeOrder = changeOrder;
+    self.orderByIndex = orderByIndex;
     self.creacteTable = creacteTable;
     self.selectDeselectRow = selectDeselectRow;
     self.selectDeselectAllRows = selectDeselectAllRows;
@@ -97,11 +99,21 @@
     self.currentRowOnHover;
 
     function onInit() {
+      if (!$scope.safeApply) {
+        $scope.safeApply = function (fn) {
+          var phase = this.$root.$$phase;
+          if (phase == '$apply' || phase == '$digest') {
+            if (fn && typeof fn === 'function') {
+              fn();
+            }
+          } else {
+            this.$apply(fn);
+          }
+        };
+      }
       _initializeDefaultValues();
-      _setOrderQuery();
-
+      self.orderByInsertion ? orderByIndex() : _setOrderQuery();
       self.tableUpdateFunction = _refreshGrid;
-
       creacteTable();
     }
 
@@ -109,7 +121,6 @@
       if (self.dynamicTableSettings) {
         var _settings = self.dynamicTableSettings;
         _settings = _settings.getSettings ? _settings.getSettings() : _settings;
-        console.log(_settings);
 
         self.headers = _settings.headers;
         self.elementsArray = _settings.elementsArray;
@@ -133,6 +144,7 @@
         self.rowsPerPageArray = _settings.rowsPerPageArray;
         self.rowPerPageDefault = _settings.rowPerPageDefault;
         self.hideDelayTime = _settings.hideDelayTime;
+        self.disableShowAll = _settings.disableShowAll;
       }
 
       // if(!self.numberFieldsAlignedLeft) self.numberFieldsAlignedLeft = 1;
@@ -149,7 +161,6 @@
       if (!self.formatDataPropertiesArray) self.formatDataPropertiesArray = [];
       if (!self.hideDelayTime) self.hideDelayTime = 3000;
       if (!self.callbackAfterChange) self.callbackAfterChange = function () {};
-
       _alignArrayPopulate();
 
       self.error = {
@@ -217,6 +228,7 @@
       self.elementsArray = newElementsArray || self.elementsArray;
       self.selectedItemCounter = 0;
       self.creacteTable();
+      $scope.safeApply();
     }
 
     function _havePagination() {
@@ -357,10 +369,6 @@
       return self.orderInverse ? 'dynamic-arrow-icon-inverse' : 'dynamic-arrow-icon';
     };
 
-    self.verifyOrderIcon = function (index) {
-      return self.orderQuery === 'column' + $index + '.value' ? true : false;
-    };
-
     function rowPerPageChange() {
       self.table.currentPage = 1;
       pagesChage();
@@ -458,9 +466,18 @@
       }
     }
 
-    function _setOrderQuery(columnName) {
-      if (columnName) {
-        self.orderQuery = columnName + '.orderValue';
+    function orderByIndex() {
+      _setOrderQuery('$index');
+      self.orderInverse = !self.orderInverse;
+    }
+
+    function _setOrderQuery(propertyName) {
+      if (propertyName) {
+        if (propertyName === '$index') {
+          self.orderQuery = propertyName;
+        } else {
+          self.orderQuery = propertyName + '.orderValue';
+        }
       } else {
         self.orderQuery = [];
         if (self.orderIndices) {
@@ -553,6 +570,7 @@
         self.runCallbackOnChange(row, 'select');
       }
     }
+
     function _deselectRow(row) {
       if (row.selected) {
         row.selected = false;
@@ -582,7 +600,8 @@
           var value = _getValueFromElement(element, elementProperty, index, true);
           var orderValue = _getValueFromElement(element, elementProperty, index);
         } else {
-          specialField = _specialFieldConstruction(elementProperty);
+          specialField = _specialFieldConstruction(elementProperty, element);
+          var orderValue = specialField.orderValue || '';
         }
 
         var column = _createColumn(row, value, orderValue, index, specialField);
@@ -607,9 +626,10 @@
       return column;
     }
 
-    function _specialFieldConstruction(elementProperty) {
+    function _specialFieldConstruction(elementProperty, element) {
       var specialFieldStructure = undefined;
       var iconButton = elementProperty.iconButton;
+      var iconWithFunction = elementProperty.iconWithFunction;
 
       if (iconButton) {
         specialFieldStructure = {
@@ -624,7 +644,14 @@
             renderGrid: iconButton.renderGrid || false,
             removeElement: iconButton.removeElement || false,
             receiveCallback: iconButton.receiveCallback || false
-          }
+          },
+          orderValue: iconButton.icon
+        };
+      } else if (iconWithFunction) {
+        var structure = iconWithFunction.iconFunction(element);
+        specialFieldStructure = {
+          iconStructure: structure,
+          orderValue: structure.orderValue
         };
       }
 
@@ -759,6 +786,7 @@
       disableCheckbox: false,
       disableFilter: false,
       disableReorder: false,
+      disableShowAll: false,
       disablePagination: false,
       selectedColor: undefined,
       hoverColor: undefined,
@@ -781,6 +809,7 @@
     self.setSelectUnselectFunction = setSelectUnselectFunction;
     self.setCheckbox = setCheckbox;
     self.setFilter = setFilter;
+    self.setShowAll = setShowAll;
     self.setReorder = setReorder;
     self.setPagination = setPagination;
     self.setSelectedColor = setSelectedColor;
@@ -789,8 +818,19 @@
     self.addHeader = addHeader;
     self.addColumnProperty = addColumnProperty;
     self.addColumnIconButton = addColumnIconButton;
+    self.addIconWithFunction = addIconWithFunction;
 
     function setProperty() {
+      return self;
+    }
+
+    function addIconWithFunction(validate) {
+      self.settings.elementsProperties.push({
+        iconWithFunction: {
+          iconFunction: validate || function () {}
+        }
+      });
+      _addEmptyHeaderIfNeed('10', 'center');
       return self;
     }
 
@@ -854,7 +894,7 @@
           receiveCallback: receiveCallback || false
         }
       });
-      _addEmptyHeaderIfNeed('5', 'center');
+      _addEmptyHeaderIfNeed('10', 'center');
       return self;
     }
 
@@ -941,6 +981,12 @@
       return self;
     }
 
+    function setShowAll(showAllButton) {
+      showAllButton = showAllButton ? true : false;
+      self.settings.disableShowAll = !showAllButton;
+      return self;
+    }
+
     function setReorder(showReorder) {
       showReorder = showReorder ? true : false;
       self.settings.disableReorder = !showReorder;
@@ -963,13 +1009,17 @@
 
   angular.module('otus.components').directive('dropFile', Directive);
 
-  Directive.$inject = ['$mdToast', '$timeout'];
+  Directive.$inject = ['$mdToast', '$timeout', 'otus.components.OtusFileUploadService'];
 
-  function Directive($mdToast, $timeout) {
+  function Directive($mdToast, $timeout, FileUploadService) {
     return {
       scope: {
-        changeParent: '<',
-        propagateToChildren: '<'
+        files: '=',
+        disable: '<',
+        multipleFiles: '<',
+        extensionArray: '<',
+        functionWhenSelectFiles: '=',
+        individualValidationFunction: '='
       },
       restrict: 'A',
       link: function (scope, element, attr) {
@@ -985,78 +1035,32 @@
           FileDrop(e);
         };
 
-        function getRoundedAndUnitSize(size) {
-          var multiplier = 1024;
-          var dividedSize = size;
-          var unitIndex = 0;
-          var unitList = ['Byte', 'KB', 'mb', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-
-          if (size > multiplier) {
-            while (dividedSize > multiplier) {
-              unitIndex++;
-              dividedSize = dividedSize / multiplier;
-            }
-          }
-
-          return {
-            size: dividedSize.toFixed(1),
-            unit: unitList[unitIndex]
-          };
-        }
-
-        function getNameAndExtension(fullName) {
-          var extensionIndex = fullName.lastIndexOf('.');
-          var extension = extensionIndex > 0 ? fullName.substring(extensionIndex + 1) : undefined;
-          var name = extensionIndex > 0 ? fileName.substring(0, 28) : fullName;
-
-          return {
-            name: name,
-            extension: extension
-          };
-        }
-
         function FileDrop(e) {
           FileDragHover(e);
-          console.log(e);
           if (e.preventDefault) e.preventDefault();
           if (e.stopPropogation) e.stopPropogation();
-
-          // fetch FileList object
+          if (scope.disable) return;
           var files = e.target.files || e.dataTransfer.files;
-          console.log("files", files);
-          // process all File objects
-          for (var i = 0, f; f = files[i]; i++) {
-            //ParseFile(f);
-            console.log(f);
+          if (!scope.multipleFiles && files.length > 1) {
+            FileUploadService.showMsg('Selecione apenas um arquivo por vez.');
+          } else {
+            scope.files = FileUploadService.processFiles(files, scope);
+            if (scope.functionWhenSelectFiles) scope.functionWhenSelectFiles(scope.files);
           }
         }
-
-        scope.$$postDigest(function () {
-          console.log('scope.propagateToChildren', scope.propagateToChildren);
-          if (scope.propagateToChildren) {
-            var children = element.children();
-
-            for (var i = 0; i < children.length; i++) {
-              var child = children[i];
-              console.log("child", { a: child });
-            }
-          }
-        });
 
         function FileDragHover(e) {
           var currentElement = element[0];
-
           e.preventDefault();
+          if (scope.disable) return;
           if (e.type == "dragover") {
             if (!currentElement.classList.contains('draghover')) currentElement.classList.add("draghover");
           } else {
             currentElement.classList.remove('draghover');
           }
         }
-
         element.on('dragleave', onDragleave);
         element.on('dragover', onDragover);
-        //element.bind('drop', FileDrop);
         element[0].ondrop = FileDrop;
       }
     };
@@ -1065,116 +1069,285 @@
 (function () {
   'use strict';
 
-  angular.module('otus.components').component('fileUpload', {
-    template: '<style>\n  .file-upload {}\n\n  .file-upload-title {\n    margin: 5px;\n  }\n\n  .file-upload-subtitle {\n    opacity: 0.5;\n    font-size: .9em;\n    margin: 5px;\n  }\n\n  .file-upload-box {\n    border: 2px dashed silver;\n    background-color: rgba(75, 75, 75, 0.01);\n    padding: 20px;\n    padding-bottom: 30px;\n\n    width: 400px;\n  }\n\n  .animated-all-transition {\n    transition: all 0.5s ease;\n  }\n\n  .file-upload-box.draghover {\n    border-color: blue;\n    background-color: rgba(0, 0, 250, 0.1);\n    \n  }\n\n\n  .file-upoad-button {\n    position: relative;\n    top: -36px;\n    \n  }\n\n  .animate-if.ng-enter,\n  .animate-if.ng-leave {\n    transition: all ease 0.5s;\n  }\n\n  .animate-if.ng-enter,\n  .animate-if.ng-leave.ng-leave-active {\n    opacity: 0;\n  }\n\n  .animate-if.ng-leave,\n  .animate-if.ng-enter.ng-enter-active {\n    opacity: 1;\n  }\n</style><div flex><script src="node_modules/angular/angular.min.js"></script><script src="node_modules/angular-animate/angular-animate.min.js"></script><md-button ng-click="$ctrl.fileTitle.length ? $ctrl.fileTitle = \'\' : $ctrl.fileTitle=\'...\'" class="md-raised md-primary">Seleciona/Deseleciona</md-button><div layout="column" layout-align="center center" class="file-uplopad"><div drop-file propagate-to-children="true" class="file-upload-box animated-all-transition" layout="column" layout-align="center center" flex="50"><span ng-if="!$ctrl.fileTitle.length" class="file-upload-title animate-if">{{$ctrl.title}}</span> <span ng-if="!$ctrl.fileTitle.length" class="file-upload-subtitle animate-if">{{$ctrl.subtitle}}</span></div><md-button ng-if="!$ctrl.fileTitle.length" class="md-fab md-primary file-upoad-button animate-if"><md-icon md-font-set="material-icons">file_upload</md-icon><md-tooltip md-direction="right">{{$ctrl.buttonTooltip}}</md-tooltip></md-button></div><div layout="column"><dynamic-data-table flex dynamic-table-settings="$ctrl.dynamicTableSettings"></dynamic-data-table><br><md-button class="md-icon-button"><md-icon md-font-set="material-icons">file_upload</md-icon><md-tooltip md-direction="right">{{$ctrl.buttonTooltip}}</md-tooltip></md-button></div></div>',
+  angular.module('otus.components').component('otusFileUpload', {
+    template: '<style> \n  .animated-all-transition-05s {\n    transition: all 0.5s ease;\n  }\n  \n  .otus-file-upload-box {\n    border: 1.2px dashed silver;\n    background-color: #f8f8f8;\n    padding: 10px;\n  }\n  .otus-file-upload-box.button-only {\n    padding: 10px;\n  }\n  .otus-file-upload-box.draghover {\n    border-color: blue;\n    background-color: #e3e1fa; \n  }\n  .otus-file-upload-box:focus {\n    outline: none;\n  }\n\n  .otus-file-upload-title {\n    /* margin: 5px; */\n  }\n  .disable .otus-file-upload-title {\n    color: #8c8c8c;\n  }\n  .otus-file-upload-subtitle {\n    margin-top: 5px;\n    font-size: .9em;\n    color: #8c8c8c;\n  }\n  .otus-file-upload-accept{\n    font-size: .9em;\n    color: #8c8c8c;\n  }\n\n  .file-upoad-button {\n    /* margin: 10px; */\n  }\n</style><div ng-if="!$ctrl.disableDrop" drop-file multiple-files="$ctrl.multipleFiles" files="$ctrl.files" disable="$ctrl.disable" individual-validation-function="$ctrl.individualValidationFunction" extension-array="$ctrl.extensionArray" function-when-select-files="$ctrl.functionWhenSelectFiles" ng-class="($ctrl.disable? \' disable \' : \'\') + ($ctrl.buttonOnly? \' button-only \' : \'\') + \' otus-file-upload-box animated-all-transition-05s\'" layout="column" layout-align="center center" ng-click="$ctrl.upload()"><span ng-if="!$ctrl.buttonOnly && $ctrl.dropTitle.length" class="otus-file-upload-title">{{$ctrl.dropTitle}}</span> <span ng-if="!$ctrl.buttonOnly && $ctrl.subtitle.length" class="otus-file-upload-subtitle">{{$ctrl.subtitle}}</span><md-button id="otusFileUploadButton" ng-class="$ctrl.buttonClass + \' md-fab file-upoad-button\'" ng-disabled="$ctrl.disable"><md-icon md-font-set="material-icons">{{$ctrl.buttonIcon}}</md-icon><md-tooltip md-direction="{{$ctrl.buttonTooltipDirection}}">{{$ctrl.buttonTooltip + ($ctrl.buttonOnly ? \' - \' + $ctrl.accept : \'\')}}</md-tooltip></md-button><span ng-if="!$ctrl.buttonOnly && $ctrl.accept.length" class="otus-file-upload-accept">{{$ctrl.formatInfoLabel + \' \' + $ctrl.accept}}</span></div><div ng-if="$ctrl.disableDrop"><md-button id="otusFileUploadButton" ng-class="$ctrl.buttonClass + \' md-fab\'" ng-disabled="$ctrl.disable" ng-click="$ctrl.upload()"><md-icon md-font-set="material-icons">{{$ctrl.buttonIcon}}</md-icon><md-tooltip md-direction="{{$ctrl.buttonTooltipDirection}}">{{$ctrl.buttonTooltip + \' - \' + $ctrl.accept}}</md-tooltip></md-button></div>',
     bindings: {
-      teste: '<',
-      title: '<',
+      files: '=',
+      disable: '<',
+      disableDrop: '<',
       subtitle: '<',
-      buttonTooltip: '<'
-
+      dropTitle: '<',
+      acceptArray: '<',
+      buttonOnly: '<',
+      buttonIcon: '<',
+      buttonClass: '<',
+      buttonTooltip: '<',
+      multipleFiles: '<',
+      extensionArray: '<',
+      formatInfoLabel: '<',
+      buttonTooltipDirection: '<',
+      functionWhenSelectFiles: '=',
+      individualValidationFunction: '='
     },
     controller: Controller
   });
 
-  Controller.$inject = ['$mdDialog', 'otus.components.DynamicTableSettingsFactory'];
+  Controller.$inject = ['$element', '$mdDialog', 'otus.components.OtusFileUploadService', 'otus.components.DynamicTableSettingsFactory'];
 
-  function Controller($mdDialog, DynamicTableSettingsFactory) {
+  function Controller($element, $mdDialog, FileUploadService, DynamicTableSettingsFactory) {
     var self = this;
     var _confirmAction;
 
     self.$onInit = onInit;
+    self.accept = '';
+    self.inputFile;
 
-    self.fileTitle = '';
-    self.date = new Date();
-    self.filesArray = [];
-
-    self.removeElement = function (element) {
-      element.file.state = 'Excluido';
-      return element;
+    self.upload = function () {
+      if (!self.disable) self.inputFile.click();
     };
 
-    self.updateElement = function (element) {
-      element.file.state = 'Atualizado';
-      return element;
-    };
-
-    self.callbackAfterChange = function () {};
-
-    self.executCallback = function (element, callback) {
-      $mdDialog.show(_confirmAction).then(function () {
-        callback(element);
-      }).catch(function () {});
-    };
+    function inputChange(event) {
+      var filesArray = event.target.files;
+      self.files = FileUploadService.processFiles(filesArray, self);
+      if (self.functionWhenSelectFiles) self.functionWhenSelectFiles(self.files);
+    }
 
     function onInit() {
-      _buildDialogs();
+      if (self.dropTitle === undefined) self.dropTitle = 'Arraste e solte o(s) arquivo(s)';
+      if (self.subtitle === undefined) self.subtitle = 'ou clique';
+      if (self.formatInfoLabel === undefined) self.formatInfoLabel = 'Formatos suportados:';
+      if (self.buttonTooltipDirection === undefined) self.buttonTooltipDirection = 'right';
+      if (self.buttonTooltip === undefined) self.buttonTooltip = 'Selecionar Arquivo(s)';
+      if (self.buttonClass === undefined) self.buttonClass = 'md-primary';
+      if (self.buttonIcon === undefined) self.buttonIcon = 'file_upload';
+      self.accept = FileUploadService.getAcceptByExtensionArray(self.extensionArray);
+      self.inputFile = angular.element('<input id="fileInput" type="file" class="ng-hide">');
+      self.inputFile.attr('accept', self.accept);
+      self.inputFile.attr('multiple', self.multipleFiles);
+      self.inputFile.on('change', function (e) {
+        inputChange(e);
+      });
+    }
+  }
+})();
+(function () {
+  'use strict';
 
-      self.dynamicTableSettings = DynamicTableSettingsFactory.create()
-      //header, flex, align, ordinationPriorityIndex
-      .addHeader('Arquivo', '', 'left', 30)
-      //property, formatType
-      .addColumnProperty('file.name')
+  angular.module('otus.components').factory('otus.components.OtusFileUploadFactory', Factory);
 
-      //header, flex, align, ordinationPriorityIndex
-      .addHeader('Tipo', '', 'center')
-      //property, formatType
-      .addColumnProperty('file.type')
+  Factory.$inject = ['$mdToast', '$timeout'];
 
-      //header, flex, align, ordinationPriorityIndex
-      .addHeader('Tamanho', '', '', 5)
-      //property, formatType
-      .addColumnProperty('file.length')
+  function Factory($mdToast, $timeout) {
+    var self = this;
+    self.create = create;
+    self.fromJson = fromJson;
+    self.createWithFile = createWithFile;
 
-      //header, flex, align, ordinationPriorityIndex
-      .addHeader('Status', '', 'center', 3)
-      //property, formatType
-      .addColumnProperty('file.state')
+    function create() {
+      return new FileUploadFactory($mdToast, $timeout, {});
+    }
 
-      //header, flex, align, ordinationPriorityIndex
-      .addHeader('Data', '', '', 4)
-      //property, formatType
-      .addColumnProperty('file.nd', 'DATE')
+    function createWithFile(file) {
+      var fileStructure = new FileUploadFactory($mdToast, $timeout, {});
+      fileStructure.fillWithFile(file);
+      return fileStructure;
+    }
 
-      //icon, tooltip, classButton, successMsg,
-      //buttonFuntion, returnsSuccess, renderElement, renderGrid, removeElement, receiveCallback
-      .addColumnIconButton('delete_forever', 'Deletar Registro', 'md-primary', 'Item excluido', self.removeElement, true, false, false, true, false)
+    function fromJson(fileStructureInfo) {
+      return new FileUploadFactory($mdToast, $timeout, fileStructureInfo);
+    }
+    return self;
+  }
 
-      //icon, tooltip, classButton, successMsg,
-      //buttonFuntion, returnsSuccess, renderElement, renderGrid, removeElement, receiveCallback
-      .addColumnIconButton('autorenew', '', 'md-primary', '', self.updateElement, false, false, true, false, false)
+  function FileUploadFactory($mdToast, $timeout, fileStructureInfo) {
+    var self = this;
 
-      //icon, tooltip, classButton, successMsg,
-      //buttonFuntion, returnsSuccess, renderElement, renderGrid, removeElement, receiveCallback
-      .addColumnIconButton('delete_forever', '', 'md-primary', '', self.executCallback, false, false, true, true, true).setElementsArray(self.filesArray).setCallbackAfterChange(self.callbackAfterChange).setTableUpdateFunction(self.updateDataTable).setTitle('Lista de Arquivos').setNumberFieldsAlignedLeft(5).setFormatData("'Dia - 'dd/MM/yy")
-      //.setSelectUnselectFunction()
-      .setCheckbox(false).setFilter(true).setReorder(true).setPagination(true).setSelectedColor().setHoverColor().getSettings();
+    self.objectType = 'FileUploadFactory';
+    self.name = fileStructureInfo.name || undefined;
+    self.extension = fileStructureInfo.extension || undefined;
+    self.displaySize = fileStructureInfo.displaySize || undefined;
+    self.size = fileStructureInfo.size || undefined;
+    self.unit = fileStructureInfo.unit || undefined;
+    self.date = fileStructureInfo.date || undefined;
+    self.file = fileStructureInfo.file || undefined;
+    self.rejectType = fileStructureInfo.rejectType || undefined;
+    self.isValid = fileStructureInfo.isValid || false;
 
-      console.log(self.dynamicTableSettings);
+    self.toJSON = toJSON;
+    self.fillWithFile = fillWithFile;
+    self.getNameAndExtension = getNameAndExtension;
+    self.getRoundedAndUnitSize = getRoundedAndUnitSize;
 
-      if (!self.title) self.title = 'Arraste e solte aqui o arquivo.';
-      if (!self.subtitle) self.subtitle = 'ou clique';
-      if (!self.buttonTooltip) self.buttonTooltip = 'Adicionar Arquivo';
+    onInit();
 
-      for (var i = 1; i < 22; i++) {
-        var tmp = {
-          file: {
-            name: 'Resultados de exames - ' + i,
-            type: 'CSV',
-            length: 14 * i + 'kbs',
-            state: '',
-            nd: self.date
-          }
-        };
+    function onInit() {
+      if (fileStructureInfo.file) fillWithFile(fileStructureInfo.file);
+    }
 
-        self.filesArray.push(tmp);
+    function fillWithFile(file) {
+      if (file) {
+        var nameAndExtension = getNameAndExtension(file.name);
+        var roundedAndUnitSize = getRoundedAndUnitSize(file.size);
+        self.name = nameAndExtension.name;
+        self.extension = nameAndExtension.extension || '';
+        self.displaySize = roundedAndUnitSize.size + ' ' + roundedAndUnitSize.unit;
+        self.size = roundedAndUnitSize.size;
+        self.unit = roundedAndUnitSize.unit;
+        self.date = file.lastModifiedDate;
+        self.file = file;
       }
-
-      console.log('file-upload-onInit');
     }
 
-    function _buildDialogs() {
-      _confirmAction = $mdDialog.confirm().title('Confirmar Ação:').textContent('A ação será executada, deseja continuar?').ariaLabel('Confirmação de Ação').ok('Ok').cancel('Cancelar');
+    function getRoundedAndUnitSize(size) {
+      var multiplier = 1024;
+      var dividedSize = Number(size);
+      var unitIndex = 0;
+      var unitList = ['Byte', 'KB', 'mb', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+      if (size > multiplier) {
+        while (dividedSize > multiplier) {
+          unitIndex++;
+          dividedSize = dividedSize / multiplier;
+        }
+      }
+      return {
+        size: dividedSize.toFixed(1),
+        unit: unitList[unitIndex]
+      };
     }
+
+    function getNameAndExtension(fullName) {
+      var extensionIndex = fullName.lastIndexOf('.');
+      var extension = extensionIndex > 0 ? fullName.substring(extensionIndex + 1) : undefined;
+      var name = extensionIndex > 0 ? fullName.substring(0, extensionIndex) : fullName;
+      return {
+        name: name,
+        extension: extension
+      };
+    }
+
+    function toJSON() {
+      var json = {
+        objectType: self.objectType,
+        name: self.name,
+        extension: self.extension,
+        displaySize: self.displaySize,
+        size: self.size,
+        unit: self.unit,
+        date: self.date,
+        file: self.file,
+        isValid: self.isValid,
+        rejectType: self.rejectType
+      };
+      return json;
+    }
+  }
+})();
+(function () {
+  'use strict';
+
+  angular.module('otus.components').service('otus.components.OtusFileUploadService', Service);
+
+  Service.$inject = ['$mdToast', 'otus.components.OtusFileUploadFactory'];
+
+  function Service($mdToast, FileUploadFactory) {
+    var self = this;
+    var hideDelayTime = 4000;
+
+    self.showMsg = showMsg;
+    self.getStatus = getStatus;
+    self.validation = validation;
+    self.validationExtention = validationExtention;
+    self.processFiles = processFiles;
+    self.getAcceptByExtensionArray = getAcceptByExtensionArray;
+
+    function showMsg(msg) {
+      $mdToast.show($mdToast.simple().textContent(msg).hideDelay(hideDelayTime));
+    }
+
+    function processFiles(filesArray, scope) {
+      var status = {};
+      var acceptedFiles = [];
+      var fileUploadArray = [];
+
+      var multipleFiles = scope.multipleFiles;
+      var extensionArray = scope.extensionArray;
+      var individualValidationFunction = scope.individualValidationFunction;
+
+      for (var i = 0; i < filesArray.length; i++) {
+        var file = filesArray[i];
+        var fileUpload = FileUploadFactory.createWithFile(file);
+        if (validation(fileUpload, scope)) {
+          fileUpload.isValid = true;
+        }
+        fileUploadArray.push(fileUpload);
+      }
+      status = getStatus(fileUploadArray);
+      acceptedFiles = status.acceptedFiles;
+      showMsg(status.msg || "Nehnum arquivo selecionado.");
+      return acceptedFiles;
+    }
+
+    function getStatus(fileUploadArray) {
+      var status = {
+        fileAccepted: 0,
+        fileRejected: 0,
+        anotherRejection: 0,
+        invalidExtension: 0,
+        acceptedFiles: [],
+        msg: ''
+      };
+      fileUploadArray.forEach(function (fileUpload) {
+        if (fileUpload.isValid) {
+          status.fileAccepted++;
+          status.acceptedFiles.push(fileUpload);
+        } else {
+          status.fileRejected++;
+          if (fileUpload.rejectType === 'FORMAT') status.invalidExtension++;
+          if (fileUpload.rejectType === 'ANOTHER') status.anotherRejection++;
+        }
+      });
+      if (status.fileAccepted) status.msg += status.fileAccepted + ' arquivo(s) válido(s). \n';
+      if (status.invalidExtension) status.msg += status.invalidExtension + ' arquivo(s) rejeitado(s) com formato inválido. \n';
+      if (status.anotherRejection) status.msg += status.anotherRejection + ' arquivo(s) rejeitado(s) por validação dinâmica. \n';
+      return status;
+    }
+
+    function validationExtention(fileUpload, scope) {
+      var array = scope.extensionArray || [];
+      var isValid = array.length ? false : true;
+      for (var i = 0; i < array.length; i++) {
+        var extension = array[i];
+        extension = extension.replace('.', '').replace(',', '').trim();
+        if (extension === '*' || extension.toUpperCase() === fileUpload.extension.toUpperCase()) {
+          isValid = true;
+          break;
+        }
+      }
+      return isValid;
+    }
+
+    function validation(fileUpload, scope) {
+      var isValid = false;
+      isValid = validationExtention(fileUpload, scope);
+      if (!isValid) fileUpload.rejectType = 'FORMAT';
+      if (isValid && scope.individualValidationFunction) {
+        isValid = scope.individualValidationFunction(fileUpload);
+        if (!isValid) fileUpload.rejectType = 'ANOTHER';
+      }
+      return isValid;
+    }
+
+    function getAcceptByExtensionArray(extensionArray) {
+      var accept = '';
+      var array = extensionArray || [];
+      for (var i = 0; i < array.length; i++) {
+        var extension = array[i];
+        extension = extension.replace('.', '').replace(',', '').trim();
+        accept = accept + (i ? ', .' : '.') + extension;
+      }
+      return accept.toLowerCase();
+    }
+
+    return self;
   }
 })();

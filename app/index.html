@@ -24,18 +24,6 @@
 <script src="node_modules/jquery/dist/jquery.min.js"></script>
 <!-- ************************************* Angular ************************************* -->
 <script src="node_modules/angular/angular.min.js"></script>
-
-<script>
-    var head  = document.getElementsByTagName('head')[0];
-    var script = document.createElement('script');
-    script.src = "node_modules/angular-animate/angular-animate.min.js";
-    
-    script.onload = function() {
-        console.log("Script loaded and ready");
-    };
-    head.appendChild(script)
-    
-</script>
 <script src="node_modules/angular-animate/angular-animate.min.js"></script>
 
 
@@ -83,10 +71,10 @@
 <script src="app/otus-components/dynamic-data-table/dynamic-data-table-component.js"></script>
 </head>
 
-<body ng-app="otus.conerter" layout="column"  md-theme="default">
-    <md-content>
-        <div layout="row" flex>
-            <converter-app teste="'Meu teste 2'" flex></converter-app>
+<body ng-app="otus.converter" layout="column"  md-theme="default">
+    <md-content flex layout="column" >
+        <div layout="column" flex>
+            <converter-app teste="'Meu teste 2'" layout="row" flex></converter-app>
         </div>
     </md-content>
 </body>

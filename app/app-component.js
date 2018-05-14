@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-    .module('otus.conerter')
+    .module('otus.converter')
     .component('converterApp', {
       templateUrl: 'app/app-template.html',
       bindings: {
@@ -29,7 +29,7 @@
 
     function onInit() {
       _buildDialogs();
-
+      
       self.dynamicTableSettings = DynamicTableSettingsFactory.create()
         //header, flex, align, ordinationPriorityIndex
         .addHeader('Arquivo', '', 'left')

@@ -23,7 +23,6 @@
       },
       restrict: 'A',
       link: function (scope, element, attr) {
-        var hideDelayTime = 5000;
         function onDragleave(e) {
           FileDragHover(e);
         };

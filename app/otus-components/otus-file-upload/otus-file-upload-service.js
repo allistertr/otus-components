@@ -56,6 +56,8 @@
       var status = {
         fileAccepted: 0,
         fileRejected: 0,
+        anotherRejection: 0,
+        invalidExtension: 0,
         acceptedFiles: [],
         msg: ''
       };
@@ -65,10 +67,13 @@
           status.acceptedFiles.push(fileUpload);
         } else {
           status.fileRejected++;
+          if(fileUpload.rejectType === 'FORMAT') status.invalidExtension++;
+          if(fileUpload.rejectType === 'ANOTHER') status.anotherRejection++;
         }
       });
-      if(status.fileAccepted) status.msg+= status.fileAccepted + ' arquivo(s) selecionado(s). \n';
-      if(status.fileRejected) status.msg+= status.fileRejected + ' arquivo(s) rejeitado(s). \n';
+      if(status.fileAccepted) status.msg+= status.fileAccepted + ' arquivo(s) válido(s). \n';
+      if(status.invalidExtension) status.msg+= status.invalidExtension + ' arquivo(s) rejeitado(s) com formato inválido. \n';
+      if(status.anotherRejection) status.msg+= status.anotherRejection + ' arquivo(s) rejeitado(s) por validação dinâmica. \n';
       return status;
     }
 
@@ -89,8 +94,10 @@
     function validation(fileUpload, scope) {
       var isValid = false;
       isValid = validationExtention(fileUpload, scope);
+      if(!isValid) fileUpload.rejectType = 'FORMAT';
       if (isValid && scope.individualValidationFunction) {
         isValid = scope.individualValidationFunction(fileUpload);
+        if(!isValid) fileUpload.rejectType = 'ANOTHER';
       }
       return isValid;
     }

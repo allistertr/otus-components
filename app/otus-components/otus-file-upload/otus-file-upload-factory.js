@@ -43,6 +43,7 @@
     self.unit = fileStructureInfo.unit || undefined;
     self.date = fileStructureInfo.date || undefined;
     self.file = fileStructureInfo.file || undefined;
+    self.rejectType = fileStructureInfo.rejectType || undefined;
     self.isValid = fileStructureInfo.isValid || false;
 
     self.toJSON = toJSON;
@@ -116,7 +117,9 @@
         size: self.size,
         unit: self.unit,
         date: self.date,
-        file: self.file
+        file: self.file,
+        isValid: self.isValid,
+        rejectType: self.rejectType
       };
       return json;
     }

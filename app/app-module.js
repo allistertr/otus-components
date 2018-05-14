@@ -2,7 +2,7 @@
     'use strict';
   
     angular
-      .module('otus.conerter', [
+      .module('otus.converter', [
         'ngMaterial',
         'ngAnimate',
         'otus.components'
